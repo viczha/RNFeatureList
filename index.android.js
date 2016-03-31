@@ -15,7 +15,7 @@ var App = require('./App')
 
 class RNFeatureList extends Component {
   render() {
-      return <App></App>
+      return <App {...this.props}></App>
   }
 }
 AppRegistry.registerComponent('RNFeatureList', () => RNFeatureList);

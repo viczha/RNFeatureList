@@ -7,25 +7,31 @@ import React, {
     Component,
     StyleSheet,
     Text,
-    View
+    View,
+    Navigator
 } from 'react-native';
 
-var ScrollableTabView = require('react-native-scrollable-tab-view');
+var appViews = require('./Views/AppViews')
+
 
 class App extends Component {
+    renderNavComponet(route, navigator) {
+        var ComponentView = appViews[route.componentName];
+        return <ComponentView
+            navigator = {navigator}
+            onBack={() => {
+                if(route.index > 0) {
+                    navigator.pop();
+                }
+            }}></ComponentView>
+    }
+
     render() {
         return (
-            <ScrollableTabView>
-                <View tabLabel="React">
-                    <Text>1</Text>
-                </View>
-                <View tabLabel="Flow">
-                    <Text>2</Text>
-                </View>
-                <View tabLabel="Just">
-                    <Text>3</Text>
-                </View>
-            </ScrollableTabView>
+            <Navigator
+                initialRoute={{name: 'S', index: 0, componentName: 'ViewList'}}
+                renderScene={this.renderNavComponet.bind(this)}
+            />
         );
     }
 }

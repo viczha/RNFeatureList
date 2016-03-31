@@ -16,7 +16,7 @@ var App = require('./App');
 class RNFeatureList extends Component {
     render() {
         return (
-           <App></App>
+           <App {...this.props}></App>
         );
     }
 }
