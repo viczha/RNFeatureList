@@ -33,6 +33,18 @@ class ViewList extends Component {
             index: 1
         })
 
+        rows.push({
+            title: 'team info',
+            componentName: 'TeamInfo',
+            index: 2
+        })
+
+        rows.push({
+            title: 'Refresh View',
+            componentName: 'PullToRefreshView',
+            index: 3
+        })
+
         return rows;
     }
 
