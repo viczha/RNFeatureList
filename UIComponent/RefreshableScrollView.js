@@ -13,180 +13,128 @@ var {
     Text,
     ScrollView,
     PanResponder,
-    Image
+    Image,
+    Animated,
     } = React;
 
-const _default = 0;
-const _pulldown = 1;
-const _pulldownOver = 2;
-
-const _distance = 70;
-
-const radius = 10;
+const distance = 70;
+const offsetHeight = 50;
 
 class RefreshableScrollView extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            tracking: false,
+            innerTop: new Animated.Value(-offsetHeight),
+            imageRotate: new Animated.Value(0),
+            needPull: false,
             refreshing: false,
-            scrollStatus: _default,
-            contentInset: -20,
-            progress: 0,
         }
 
+        this.arrowDown = true;
+
+        this.y = 0;
         this._panResponder = PanResponder.create({
-            // Ask to be the responder:
-            onStartShouldSetPanResponder: (evt, gestureState) => true,
-            onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-            onMoveShouldSetPanResponder: (evt, gestureState) => false,
-            onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
-
             onPanResponderGrant: (evt, gestureState) => {
-                if(!this.state.refreshing) {
-                    this.setState({
-                        tracking: true,
-                    })
-                    console.log('grant...')
-                }
-
-            },
-            onPanResponderMove: (evt, gestureState) => {
-                //console.log('move...')
+                this.grant = true;
             },
             onPanResponderRelease: (evt, gestureState) => {
-                if(!this.state.refreshing) {
-                    var _state = {
-                        refreshing: false,
-                        tracking: false,
-                        scrollStatus: _default,
-                        progress: 0,
-                        contentInset: -20,
-                    }
-                    if(this.state.scrollStatus === _pulldownOver && this.props.hasOwnProperty('_onRefreshStart')) {
-                        _state.refreshing = true;
-                        _state.contentInset = 0;
-                        this.props._onRefreshStart(this.refreshFinish.bind(this));
+                this.grant = false;
 
-                    }
-                    this.setState(_state);
-                    console.log('release...' + this.state.refreshing);
+                if(this.state.needPull && !this.state.refreshing) {
+                    this.pullOver = true;
+                    this.setState({
+                        refreshing: true
+                    });
+                    setTimeout(()=>{
+                        this.refreshFinish();
+                    }, 3000)
+                } else {
+                    this.pullOver = false;
                 }
-
             },
         });
-    }
-
-    componentDidMount() {
-        // setTimeout(() => {
-        //   console.log('set native scroll props....');
-        //   this.refs.scroll.setNativeProps({contentOffset : {top: 100}})
-        // }, 2000)
-    }
-
-    componentWillUnmount() {
-
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        //return !deepEqual(this.state, nextState);
-        return this.state.tracking !== nextState.tracking
-            || this.state.refreshing !== nextState.refreshing
-            || this.state.scrollStatus !== nextState.scrollStatus
-            || this.state.progress !== nextState.progress
-            || this.state.contentInset !== nextState.contentInset;
     }
 
     handlerScroll(event) {
         let { contentInset, contentOffset } = event.nativeEvent;
+        this.y = contentOffset.y;
+        if(-this.y > distance && this.grant && this.arrowDown === true && !this.animateArrow) {
+            this.setState({needPull: true})
+            this.rotateArrow(true);
+        }
 
+        if(-this.y < distance && this.grant && this.arrowDown === false && !this.animateArrow) {
+            this.setState({needPull: false})
+            this.rotateArrow(false);
+        }
 
-        if(this.state.tracking && !this.state.refreshing) {
-            if((contentOffset.y-20) < -_distance) {
-                this.setState({
-                    scrollStatus: _pulldownOver,
-                    progress: Math.min(-(contentOffset.y-20)/_distance, 1),
-                })
-            } else if((contentOffset.y-20) < 0) {
-                this.setState({
-                    scrollStatus: _pulldown,
-                    progress: Math.min(-(contentOffset.y-20)/_distance, 1),
-                })
+        var val = -contentOffset.y - offsetHeight;
+        if(this.pullOver) {
+            val = Math.max(val, 0);
+        }
+        this.state.innerTop.setValue(val)
+
+    }
+
+    rotateArrow(flag) {
+        this.animateArrow = true;
+        Animated.timing(
+            this.state.imageRotate,
+            {
+                toValue: flag ? 1 : 0,
+                duration: 100,
             }
-
-
-            console.log('scroll x: ' + contentOffset.x)
-            console.log('scroll y: ' + contentOffset.y)
-            console.log('progress: ' + this.state.progress);
-        }
-
-
+        ).start(() => {
+            this.animateArrow = false;
+        });
+        this.arrowDown = !flag;
     }
-
-    renderScrollContent() {
-        if(this.props.hasOwnProperty('renderScrollContent')) {
-            return this.props.renderScrollContent();
-        } else {
-            return false;
-        }
-    }
-
-    renderIndicator() {
-        if(this.state.refreshing === true) {
-            //return false;
-            return (<View style={[styles.scrollViewIndicatorContainer]}>
-                    <Text>pull down to refresh</Text>
-                </View>
-            )
-        } else if(this.state.scrollStatus === _default) {
-            //return false;
-            return (<View style={[styles.scrollViewIndicatorContainer]}>
-                    <Text>pull down to refresh</Text>
-                </View>
-            )
-        } else if(this.state.scrollStatus === _pulldown) {
-            return (<View style={[styles.scrollViewIndicatorContainer]}>
-                    <Text>pull down to refresh</Text>
-                </View>
-            )
-        } else if(this.state.scrollStatus === _pulldownOver) {
-            return (<View style={[styles.scrollViewIndicatorContainer]}>
-                    <Text>release to refresh</Text>
-                </View>
-            )
-        }
-    }
-
-    renderRefreshIndicator() {
-        if(this.state.refreshing === true) {
-            return ( <View
-                    style={{justifyContent: 'center',alignItems: 'center',backgroundColor: 'rgba(250,250,250,1)'}}>
-                    <Image style={{width: 25, height: 53, backgroundColor: 'transparent'}}
-                           source={require('../Src/Images/loading-football.gif')}/>
-                </View>
-            )
-        } else {
-            return false;
-        }
-    }
-
 
     refreshFinish() {
-        console.log('finish refresh');
         this.setState({
-            refreshing: false,
-            contentInset: -20,
+            refreshing: false
+        });
+        Animated.timing(
+            this.state.innerTop,
+            {
+                toValue: -offsetHeight,
+                duration: 300,
+            }
+        ).start(() => {
         });
     }
 
+    renderIndicator() {
+        var _rotate = this.state.imageRotate.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '180deg'],
+            extrapolate: 'clamp'
+        });
+        if(this.state.refreshing) {
+            return (
+            <View style={styles.scrollViewIndicatorContainer}>
+                <Image style={{width: 25, height: 50, backgroundColor: 'transparent'}}
+                       source={require('../Src/Images/loading-football.gif')}/>
+            </View>
+            )
+        } else {
+            return (
+                <View style={styles.scrollViewIndicatorContainer}>
+                    <Animated.View style={{ width: 25, height: 30, transform:[{rotate: _rotate}]}}>
+                        <Image style={{width: 25, height: 30, backgroundColor: 'transparent'}}
+                               source={require('../Src/Images/arrow@3x.png')}/>
+                    </Animated.View>
+                    <Text>{this.state.needPull ? 'release to refresh' : 'pull to refresh'}</Text>
+                </View>
+            )
+        }
+
+    }
+
     render() {
-        console.log('scrollview render...')
+        console.log('scrollview render...');
 
-
-        var strokeColor = this.state.progress === 1 ? 'green' : 'rgba(220,220,220,1)';
-        //var inset = this.state.refreshing ? 0 : -20;
-        console.log('inset = ' + this.state.contentInset);
         return (
             <View style={[styles.container]}>
                 <ScrollView
@@ -194,14 +142,15 @@ class RefreshableScrollView extends React.Component {
                     {...this.props}
                     {...this._panResponder.panHandlers}
                     scrollEventThrottle={13}
-                    contentInset={{top: -20}}
-                    contentOffset={{y: 20}}
                     onScroll={this.handlerScroll.bind(this)}>
-                    <View style={{backgroundColor: '#eeeeee'}}>
+                    <Animated.View
+                        style={[styles.ScrollInner, {top: this.state.innerTop}]}
+
+                    >
                         {this.renderIndicator()}
-                        {this.renderRefreshIndicator()}
-                        {this.renderScrollContent()}
-                    </View>
+                        {this.props.children}
+                    </Animated.View>
+
                 </ScrollView>
             </View>
         )
@@ -213,18 +162,16 @@ var styles = StyleSheet.create({
         flex: 1
     },
 
-    scrollViewBgContainer: {
-        position: 'absolute',
-        top: 10,
+    ScrollInner: {
+
         left: 0,
         right: 0,
-        alignItems: 'center',
     },
 
     scrollViewIndicatorContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        height: 20,
+        height: offsetHeight,
     },
 });
 

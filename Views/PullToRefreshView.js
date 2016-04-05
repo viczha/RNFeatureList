@@ -7,21 +7,25 @@ import React, {
 
 var RefreshableScrollView = require('../UIComponent/RefreshableScrollView');
 
+
 class ScrollableView extends Component {
     render() {
         return (
-            <RefreshableScrollView
-                ref={(scrollView) => {this.scrollView = scrollView}}
-                style={{flex: 1}}
-                renderScrollContent={() => (<View style={{height: 2000, backgroundColor: 'white'}}></View>)}
-                _onRefreshStart={()=>{
+            <View>
+                <View  style={{height: 100}}></View>
+                <RefreshableScrollView
+                    ref={(scrollView) => {this.scrollView = scrollView}}
+                    style={{flex: 1}}
+                    _onRefreshStart={(callback)=>{
                     setTimeout(() => {
-                         this.scrollView.setState({refreshing: false})
+                        callback();
                     }, 3000);
                 }}
-            >
+                >
+                    <View style={{height: 2000}}></View>
+                </RefreshableScrollView>
+            </View>
 
-            </RefreshableScrollView>
         );
     }
 }
