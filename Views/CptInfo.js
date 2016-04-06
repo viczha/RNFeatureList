@@ -534,6 +534,7 @@ class CptInfo extends React.Component {
                 userName: this.state.userName,
                 cptInfo: this.state.cptBasicInfo[0] || {},
                 likeOption: this.state.likeOption,
+                navigator: this.props.navigator,
             }
             return (
                 <CptLike ref='cptlike' key='cptlike' {..._props}></CptLike>

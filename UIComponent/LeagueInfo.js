@@ -193,7 +193,7 @@ class LeaguInfo extends React.Component {
 						<TouchableOpacity style={{flex: 1}} onPress={this._onLeagueDetail.bind(this)}>
 							<View style={comCss.sectionTitleDetailCon}>
 								<Text style={comCss.sectionTitleDetail}>查看详情</Text>
-								<Image style={comCss.moreDetailImg} source={{uri: 'home_arrow_icon'}} />
+								<Image style={comCss.moreDetailImg} source={require('../Src/Images/home_arrow_icon@2x.png')} />
 							</View>
 						</TouchableOpacity>
 					</View>

@@ -184,7 +184,7 @@ class CptHistory extends React.Component {
 				<View style={comCss.overLayHeader}>
 					<Text style={comCss.overLayHeaderOpt}></Text>
 					<Text style={comCss.overLayHeaderText}>历史数据</Text>
-					<TouchableOpacity style={comCss.overLayHeaderOpt} onPress={this._onLayerHide.bind(this)}><Image style={styles.closeImg} source={{uri: 'cpt_close'}} /></TouchableOpacity>
+					<TouchableOpacity style={comCss.overLayHeaderOpt} onPress={this._onLayerHide.bind(this)}><Image style={styles.closeImg} source={require('../Src/Images/cpt_close@2x.png')} /></TouchableOpacity>
 				</View>
 				<ScrollView style={comCss.overLayerContent}>
 					{this.renderGameHistory()}

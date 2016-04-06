@@ -68,7 +68,9 @@ class TeamInfo extends React.Component {
     }
 
     fetchTeamInfo() {
-        var queryUrl = teamInfoQuery + 1110;
+        var routes = this.props.navigator.getCurrentRoutes();
+        var teamid = routes[routes.length - 1].teamid ? routes[routes.length - 1].teamid : 1110;
+        var queryUrl = teamInfoQuery + teamid;
         fetch(queryUrl, {
             method: 'GET',
             timeout: 15*1000
