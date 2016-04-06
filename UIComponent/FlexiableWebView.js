@@ -32,7 +32,7 @@ class FlexiableWebView extends React.Component {
             style={{height: Number(this.state.height),}}
             scrollEnabled={false}
             onNavigationStateChange={this.onNavigationStateChange.bind(this)}
-            html={HTML}
+            source={{html: HTML}}
         />)
     }
 }

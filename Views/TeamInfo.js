@@ -44,7 +44,7 @@ const window = Dimensions.get('window');
 const tabTexts = ['资料', '近期战绩', '队员'];
 const tbWidths = [.16, .22, .23, .16, .23];
 
-class CptTeamInfo extends React.Component {
+class TeamInfo extends React.Component {
     constructor(props) {
         super(props);
 
@@ -60,11 +60,15 @@ class CptTeamInfo extends React.Component {
     }
 
     componentDidMount() {
+
+    }
+
+    _componentDidFocus() {
         this.fetchTeamInfo();
     }
 
     fetchTeamInfo() {
-        var queryUrl = teamInfoQuery + 1805;
+        var queryUrl = teamInfoQuery + 1110;
         fetch(queryUrl, {
             method: 'GET',
             timeout: 15*1000
@@ -116,7 +120,7 @@ class CptTeamInfo extends React.Component {
     showLoading() {
         return (
             <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',backgroundColor: 'rgba(250,250,250,1)'}}>
-                <Image style={{width: 25, height: 53, backgroundColor: 'transparent',marginBottom: 4}} source={{uri: 'loading-football.gif'}} />
+                <Image style={{width: 25, height: 53, backgroundColor: 'transparent',marginBottom: 4}} source={require('../Src/Images/loading-football.gif')} />
                 <Text style={{fontSize: 10, color: '#969696'}}>正在努力加载ing...</Text>
             </View>
         );
@@ -131,12 +135,11 @@ class CptTeamInfo extends React.Component {
     }
 
     renderBasicSection() {
-        return this.showLoading();
         if(this.state.loadStatus === 0) {
             return this.showLoading();
         }
         return (
-            <View key='basic' style={styles.tabSectionContainer} tabLabel={tabTexts[0]}>
+            <ScrollView key='basic' style={styles.tabSectionContainer} tabLabel={tabTexts[0]}>
                 <View style={styles.sectionContainer}>
                     <View style={styles.sectionTitle}>
                         <Text>基本信息</Text>
@@ -170,8 +173,40 @@ class CptTeamInfo extends React.Component {
                         <Text style={styles.sectionText}>{this.state.basicInfo.website}</Text>
                     </View>
                 </View>
-            </View>
+                {this.renderProfile()}
+                {this.renderBest()}
+            </ScrollView>
         )
+    }
+
+    renderProfile() {
+        if(this.state.basicInfo.profile) {
+            return (
+                <View style={styles.sectionContainer}>
+                    <View style={styles.sectionTitle}>
+                        <Text>球队简介</Text>
+                    </View>
+                    <FlexiableWebView html={this.state.basicInfo.profile}/>
+                </View>
+            )
+        } else {
+            return false;
+        }
+    }
+
+    renderBest() {
+        if(this.state.basicInfo.best) {
+            return (
+                <View style={styles.sectionContainer}>
+                    <View style={styles.sectionTitle}>
+                        <Text>球队之最</Text>
+                    </View>
+                    <FlexiableWebView html={this.state.basicInfo.best}/>
+                </View>
+            )
+        } else {
+            return false;
+        }
     }
 
     renderTableHeader(showImg, src) {
@@ -191,7 +226,6 @@ class CptTeamInfo extends React.Component {
     }
 
     renderHistorySection(){
-        return (<View><Text>11111</Text></View>);
         if(this.state.loadStatus === 0) {
             return this.showLoading();
         }  else if(this.state.loadStatus === 2) {
@@ -214,7 +248,7 @@ class CptTeamInfo extends React.Component {
         }.bind(this));
 
         return (
-            <View key='gamehistory'  tabLabel={tabTexts[1]}>{rows}</View>
+            <ScrollView key='gamehistory'  tabLabel={tabTexts[1]}>{rows}</ScrollView>
         )
     }
 
@@ -231,7 +265,6 @@ class CptTeamInfo extends React.Component {
     }
 
     renderPlayer() {
-        return (<View><Text>11111</Text></View>);
         if(this.state.loadStatus === 0) {
             return this.showLoading();
         } else if(this.state.loadStatus === 2) {
@@ -241,24 +274,24 @@ class CptTeamInfo extends React.Component {
         }
 
         return (
-            <View style={comCss.section} tabLabel={tabTexts[2]}>
+            <ScrollView style={comCss.section} tabLabel={tabTexts[2]}>
                 <View style={[styles.firstTeam]}>
                     {
                         this.state.playerInfo.map((item, i) =>(
-                            <View>
+                            <View key={i}>
                                 <View style={styles.sectionTitle}>
                                     <Text>{item.title}</Text>
                                 </View>
                                 {
                                     item.dlist.map((player, j) => (
-                                        <View key={j} style={styles.sectionRow}>
+                                        <View key={i + '-' +j} style={styles.sectionRow}>
                                             <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-                                                <Image style={[styles.playerImg, {position: 'absolute'}]} source={{uri: 'cpt_player_small'}} />
+                                                <Image style={[styles.playerImg, {position: 'absolute'}]} source={require('../Src/Images/cpt_player_small@2x.png')} />
                                                 <Image style={styles.playerImg} source={{uri: (player.photo ? player.photo : 'cpt_player_small')}} />
                                                 <Text style={[styles.playerName, {marginLeft: 6}]}>{player.name}</Text>
                                             </View>
                                             <View style={styles.playerNoCon}>
-                                                <Image style={styles.playerNoImg} source={{uri: 'playerNumBg'}} />
+                                                <Image style={styles.playerNoImg} source={require('../Src/Images/playerNumBg@2x.png')} />
                                                 <Text style={styles.playerNoText}>{player.shirtno}</Text>
                                             </View>
                                         </View>
@@ -268,7 +301,7 @@ class CptTeamInfo extends React.Component {
                         ))
                     }
                 </View>
-            </View>
+            </ScrollView>
         )
     }
 
@@ -281,10 +314,10 @@ class CptTeamInfo extends React.Component {
     }
 
     goBack() {
-
+        this.props.navigator.pop();
     }
 
-    renderContent() {
+    render() {
         var _animateAni = this.state.indicatorAni.interpolate({
             inputRange: [0, 2],
             outputRange: [window.width/6 - 35, window.width*5/6 - 35],
@@ -292,13 +325,13 @@ class CptTeamInfo extends React.Component {
         });
         return (<View style={styles.constainer}>
             <View style={styles.header}>
-                <Image style={styles.header_bg_img} source={{uri: 'football_team_bg'}} />
+                <Image style={styles.header_bg_img} source={require('../Src/Images/football_team_bg@2x.png')} />
                 <TouchableOpacity
                     style={{paddingLeft: 12, paddingTop: 25, paddingBottom: 25, paddingRight: 12, position: 'absolute',  left: 0, top: 0, backgroundColor: 'transparent'}}
                     onPress={this.goBack.bind(this)}>
                     <Image
                         style={{width: 27, height: 27, backgroundColor: 'transparent'}}
-                        source={{uri: 'back_normal'}} />
+                        source={require('../Src/Images/back.png')} />
                 </TouchableOpacity>
                 <View style={styles.team_basic_info}>
                     <View style={styles.teamLogoCon}>
@@ -326,32 +359,18 @@ class CptTeamInfo extends React.Component {
                 renderTabBar={false}
                 ref={(tabView) => {this.tabView = tabView}}
             >
-                {this.renderBasicSection()}
-                {this.renderHistorySection()}
-                {this.renderPlayer()}
+                <View style={{flex: 1}}>
+                    {this.renderBasicSection()}
+                </View>
+                <View style={{flex: 1}}>
+                    {this.renderHistorySection()}
+                </View>
+                <View style={{flex: 1}}>
+                    {this.renderPlayer()}
+                </View>
             </ScrollableTabView>
 
         </View>)
-    }
-
-    render() {
-
-
-        return (
-        <RefreshableScrollView
-            ref={(scrollView) => {this.scrollView = scrollView}}
-            style={{flex: 1}}
-            renderScrollContent={this.renderContent.bind(this)}
-            _onRefreshStart={()=>{
-                    setTimeout(() => {
-                         this.scrollView.setState({refreshing: false})
-                    }, 3000);
-                }}
-        >
-
-        </RefreshableScrollView>
-
-        )
     }
 }
 
@@ -420,7 +439,6 @@ var styles = StyleSheet.create({
     },
 
     tabSectionContainer: {
-        backgroundColor: 'yellow'
     },
 
     sectionContainer: {
@@ -529,4 +547,4 @@ var styles = StyleSheet.create({
 
 });
 
-module.exports = CptTeamInfo;
+module.exports = TeamInfo;

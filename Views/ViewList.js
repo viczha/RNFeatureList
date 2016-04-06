@@ -45,6 +45,12 @@ class ViewList extends Component {
             index: 3
         })
 
+        rows.push({
+            title: 'Cpt info',
+            componentName: 'CptInfo',
+            index: 4
+        })
+
         return rows;
     }
 

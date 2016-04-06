@@ -46,9 +46,7 @@ class RefreshableScrollView extends React.Component {
                     this.setState({
                         refreshing: true
                     });
-                    setTimeout(()=>{
-                        this.refreshFinish();
-                    }, 3000)
+                    this.beginRefresh();
                 } else {
                     this.pullOver = false;
                 }
@@ -70,7 +68,7 @@ class RefreshableScrollView extends React.Component {
         }
 
         var val = -contentOffset.y - offsetHeight;
-        if(this.pullOver) {
+        if(this.state.needPull) {
             val = Math.max(val, 0);
         }
         this.state.innerTop.setValue(val)
@@ -91,18 +89,20 @@ class RefreshableScrollView extends React.Component {
         this.arrowDown = !flag;
     }
 
-    refreshFinish() {
-        this.setState({
-            refreshing: false
-        });
-        Animated.timing(
-            this.state.innerTop,
-            {
-                toValue: -offsetHeight,
-                duration: 300,
-            }
-        ).start(() => {
-        });
+    beginRefresh() {
+        setTimeout(()=>{
+            this.setState({
+                refreshing: false
+            });
+            Animated.timing(
+                this.state.innerTop,
+                {
+                    toValue: -offsetHeight,
+                    duration: 300,
+                }
+            ).start(() => {
+            });
+        }, 3000)
     }
 
     renderIndicator() {
@@ -145,12 +145,10 @@ class RefreshableScrollView extends React.Component {
                     onScroll={this.handlerScroll.bind(this)}>
                     <Animated.View
                         style={[styles.ScrollInner, {top: this.state.innerTop}]}
-
                     >
                         {this.renderIndicator()}
                         {this.props.children}
                     </Animated.View>
-
                 </ScrollView>
             </View>
         )
