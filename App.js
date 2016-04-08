@@ -11,17 +11,27 @@ import React, {
     Navigator
 } from 'react-native';
 
+var JSUtils = require('./Utils/common');
 var appViews = require('./Views/AppViews')
 
 
 class App extends Component {
-    navigatorDidFocus(evt) {
-        console.log(evt)
-        if(this._currentComponent._reactInternalInstance.getName() == evt.componentName) {
-            this._currentComponent._componentDidFocus && this._currentComponent._componentDidFocus();
-        }
+    constructor(props) {
+        super(props);
 
-        console.log(evt)
+        this._emitter = new JSUtils.EventEmitter();
+        super(props);
+    }
+
+    navigatorDidFocus(evt) {
+        this._emitter.trigger(null, evt.componentName + 'DidFocus', evt);
+        //if(this._currentComponent._reactInternalInstance.getName() == evt.componentName) {
+        //    this._currentComponent._componentDidFocus && this._currentComponent._componentDidFocus();
+        //}
+    }
+
+    componentWillUnmount() {
+        this._emitter.removeAll();
     }
 
 
@@ -29,8 +39,15 @@ class App extends Component {
         var ComponentView = appViews[route.componentName];
         return <ComponentView
             ref={(c) => {this._currentComponent = c}}
-            navigator = {navigator}
-           ></ComponentView>
+            navigator={navigator}
+            emitter={this._emitter}
+        ></ComponentView>
+    }
+
+    navigatorBack(route, navigator) {
+        if(route.index > 0) {
+            navigator.pop();
+        }
     }
 
     render() {
@@ -40,11 +57,7 @@ class App extends Component {
                 initialRoute={{name: 'S', index: 0, componentName: 'ViewList'}}
                 renderScene={this.renderNavComponet.bind(this)}
                 onDidFocus={this.navigatorDidFocus.bind(this)}
-                onBack={() => {
-                    if(route.index > 0) {
-                        navigator.pop();
-                    }
-                }}
+                onBack={this.navigatorBack}
             />
         );
     }

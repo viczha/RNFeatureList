@@ -57,13 +57,21 @@ class TeamInfo extends React.Component {
             name: null,
             icon: null,
         }
+
+        this.focusHandle = this.didFocus.bind(this);
+        this.currentRoute = this.props.navigator.navigationContext.currentRoute;
+        this.props.emitter.listen(this.currentRoute.componentName + 'DidFocus', this.focusHandle)
+    }
+
+    componentWillUnmount() {
+        this.props.emitter.remove(this.currentRoute.componentName + 'DidFocus', this.focusHandle)
     }
 
     componentDidMount() {
 
     }
 
-    _componentDidFocus() {
+    didFocus() {
         this.fetchTeamInfo();
     }
 

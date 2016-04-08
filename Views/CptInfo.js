@@ -128,6 +128,10 @@ class CptInfo extends React.Component {
 
     }
 
+    didFocus() {
+        console.log('did focused...')
+    }
+
     _fetchData() {
         var queryUrl = CompetitionQuery + 111;
         fetch(queryUrl, {
