@@ -30,8 +30,6 @@ class RefreshableScrollView extends React.Component {
             refreshing: false,
         }
 
-        this.arrowDown = true;
-
         this.y = 0;
         this._panResponder = PanResponder.create({
             onPanResponderGrant: (evt, gestureState) => {
