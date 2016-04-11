@@ -1,6 +1,5 @@
 /*
  *下拉刷新scrollview
- *TODO: 优化
  */
 
 'use strict'
@@ -40,29 +39,26 @@ class RefreshableScrollView extends React.Component {
             },
             onPanResponderRelease: (evt, gestureState) => {
                 this.grant = false;
-
+                this.state.imageRotate.setValue(0);
                 if(this.state.needPull && !this.state.refreshing) {
-                    this.pullOver = true;
                     this.setState({
                         refreshing: true
                     });
                     this.beginRefresh();
-                } else {
-                    this.pullOver = false;
                 }
-            },
+            }
         });
     }
 
     handlerScroll(event) {
         let { contentInset, contentOffset } = event.nativeEvent;
         this.y = contentOffset.y;
-        if(-this.y > distance && this.grant && this.arrowDown === true && !this.animateArrow) {
+        if(-this.y > distance && this.grant && this.state.needPull === false) {
             this.setState({needPull: true})
             this.rotateArrow(true);
         }
 
-        if(-this.y < distance && this.grant && this.arrowDown === false && !this.animateArrow) {
+        if(-this.y < distance && this.grant && this.state.needPull === true) {
             this.setState({needPull: false})
             this.rotateArrow(false);
         }
@@ -76,7 +72,6 @@ class RefreshableScrollView extends React.Component {
     }
 
     rotateArrow(flag) {
-        this.animateArrow = true;
         Animated.timing(
             this.state.imageRotate,
             {
@@ -84,16 +79,15 @@ class RefreshableScrollView extends React.Component {
                 duration: 100,
             }
         ).start(() => {
-            this.animateArrow = false;
         });
-        this.arrowDown = !flag;
     }
 
     beginRefresh() {
+
+        //if(this.props.onBeginRefresh) {
+        //    var _promise = new Promise()
+        //}
         setTimeout(()=>{
-            this.setState({
-                refreshing: false
-            });
             Animated.timing(
                 this.state.innerTop,
                 {
@@ -101,6 +95,10 @@ class RefreshableScrollView extends React.Component {
                     duration: 300,
                 }
             ).start(() => {
+                this.setState({
+                    refreshing: false,
+                    needPull: false
+                });
             });
         }, 3000)
     }

@@ -1,7 +1,5 @@
 'use strict'
 
-var EventEmitter = require('./EventEmiter');
-
 var __export___ = {
     isEmptyObject: function(obj) {
         var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -17,6 +15,7 @@ var __export___ = {
     }
 }
 
-__export___.EventEmitter = EventEmitter;
+__export___.EventEmitter =require('./EventEmiter');
+__export___.DeepEqual = require('./deepEqual');
 
 module.exports = __export___;
