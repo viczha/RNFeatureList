@@ -15,14 +15,14 @@ class ScrollableView extends Component {
                 <View  style={{height: 100}}></View>
                 <RefreshableScrollView
                     ref={(scrollView) => {this.scrollView = scrollView}}
-                    style={{flex: 1}}
-                    _onRefreshStart={(callback)=>{
+                    style={{height: 600}}
+                    onBeginRefresh={(callback)=>{
                     setTimeout(() => {
                         callback();
                     }, 3000);
                 }}
                 >
-                    <View style={{height: 2000}}></View>
+                    <View style={{height: 1000}}></View>
                 </RefreshableScrollView>
             </View>
 
