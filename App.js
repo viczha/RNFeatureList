@@ -8,7 +8,9 @@ import React, {
     StyleSheet,
     Text,
     View,
-    Navigator
+    Navigator,
+    TouchableOpacity,
+    Image
 } from 'react-native';
 
 var JSUtils = require('./Utils/common');
@@ -25,9 +27,6 @@ class App extends Component {
 
     navigatorDidFocus(evt) {
         this._emitter.trigger(null, evt.componentName + 'DidFocus', evt);
-        //if(this._currentComponent._reactInternalInstance.getName() == evt.componentName) {
-        //    this._currentComponent._componentDidFocus && this._currentComponent._componentDidFocus();
-        //}
     }
 
     componentWillUnmount() {
@@ -35,29 +34,61 @@ class App extends Component {
     }
 
 
+    renderBody(route, navigator) {
+        return (
+            <View>
+                {this.renderHeaderSection(route, navigator)}
+                {this.renderNavComponet(route, navigator)}
+            </View>
+        )
+    }
+
+    renderHeaderSection(route, navigator) {
+        if(route.index > 0 && route.hasHeader) {
+            return (
+                <View style={{height: 70, justifyContent: 'center',}}>
+                    <TouchableOpacity
+                        style={{paddingLeft: 12, backgroundColor: 'transparent'}}
+                        onPress={() => {navigator.pop()}}>
+                        <View style={{width: 27, height: 27, borderRadius: 13.5, backgroundColor: 'black', opacity: 0.5}}>
+                            <Image
+                                style={{width: 27, height: 27, backgroundColor: 'transparent'}}
+                                source={require('./Src/Images/back.png')} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            )
+        } else {
+            return false;
+        }
+
+    }
+
+
     renderNavComponet(route, navigator) {
         var ComponentView = appViews[route.componentName];
         return <ComponentView
             ref={(c) => {this._currentComponent = c}}
+            style={{flex: 1}}
             navigator={navigator}
             emitter={this._emitter}
         ></ComponentView>
     }
 
-    navigatorBack(route, navigator) {
-        if(route.index > 0) {
-            navigator.pop();
-        }
-    }
+    //navigatorBack(route, navigator) {
+    //    if(route.index > 0) {
+    //        navigator.pop();
+    //    }
+    //}
 
     render() {
         return (
             <Navigator
                 ref={(nav) => {this.nav = nav}}
                 initialRoute={{name: 'S', index: 0, componentName: 'ViewList'}}
-                renderScene={this.renderNavComponet.bind(this)}
+                renderScene={this.renderBody.bind(this)}
                 onDidFocus={this.navigatorDidFocus.bind(this)}
-                onBack={this.navigatorBack}
+
             />
         );
     }

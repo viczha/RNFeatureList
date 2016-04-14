@@ -24,7 +24,8 @@ class ViewList extends Component {
         rows.push({
             title: '2048',
             componentName: 'Game2048',
-            index: 0
+            index: 0,
+            hasHeader: true
         })
 
         rows.push({
@@ -58,7 +59,8 @@ class ViewList extends Component {
         this.props.navigator.push({
             name: 'ddd',
             index: 1,
-            componentName: rowData.componentName
+            componentName: rowData.componentName,
+            hasHeader: rowData.hasHeader || false
         });
     }
 

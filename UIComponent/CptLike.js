@@ -35,6 +35,97 @@ const cptLikeName = 'pptvCptLike';
 var Dimensions = require('Dimensions')
 const window = Dimensions.get('window');
 
+class PreLikeButton extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            likeAni: new Animated.Value(0)
+        }
+    }
+
+    bubbleEvent(evtName) {
+        if(typeof this.props[evtName] === 'function') {
+            this.props[evtName]();
+        }
+    }
+
+    LikePress() {
+
+        this.bubbleEvent('onPress')
+    }
+
+    render() {
+        var status = 0;
+        if(this.props.likeStatus === 1) {
+            status = this.props.type === 'host' ? 1 : -1;
+        } else if(this.props.likeStatus === 2) {
+            status = this.props.type === 'guest' ? 1 : -1;
+        }
+        if(status == 0) {
+            var widthAni = this.state.likeAni.interpolate({
+                inputRange:[0, 1],
+                outputRange:[54, 54*1.1],
+                extrapolate:'clamp'
+            });
+            var heightAni = this.state.likeAni.interpolate({
+                inputRange: [0, 1],
+                outputRange: [30, 30*1.1],
+                extrapolate: 'clamp'
+            })
+            return (<TouchableOpacity onPress={()=>{this.LikePress()}}>
+                <Animated.Image
+                    style={[styles.likeButton, styles.prelikeButton, {width: widthAni, height: heightAni}]}
+                    source={{uri: 'pre_like_normal'}}
+                />
+            </TouchableOpacity>)
+        } else if (status == 1) {
+            return (<Image
+                style={[styles.likeButton, styles.prelikeButton]}
+                source={{uri: this.props.type == 'host' ? 'pre_like_yellow' : 'pre_like_blue'}}
+            />);
+        } else {
+            return (<Image
+                style={[styles.likeButton, styles.prelikeButton]}
+                source={{uri: 'pre_like_dis'}}
+            />);
+        }
+    }
+}
+
+class LikeButton extends React.Component {
+    bubbleEvent(evtName) {
+        if(typeof this.props[evtName] === 'function') {
+            this.props[evtName]();
+        }
+    }
+
+    render() {
+        var status = 0;
+        if(this.props.likeStatus === 1) {
+            status = this.props.type === 'host' ? 1 : -1;
+        } else if(this.props.likeStatus === 2) {
+            status = this.props.type === 'guest' ? 1 : -1;
+        }
+        if(status == 0) {
+            return (<TouchableOpacity onPress={()=>{this.bubbleEvent('onPress')}}>
+                <View style={[styles.likeButton1, styles.prelikeButton1]}>
+                    <Image style={styles.likeImg} source={{uri: 'cpt_like'}} />
+                </View>
+            </TouchableOpacity>)
+        } else if (status == 1) {
+            var likeClass = this.props.type === 'host' ? styles.likedButton : styles.likedButton1;
+            return (<View style={[styles.likeButton1,likeClass]}>
+                <Image style={styles.likeImg} source={{uri: 'cpt_like_sel'}} />
+            </View>);
+        } else {
+            return (<View style={[styles.likeButton1, styles.disLikeButton]}>
+                <Image style={styles.likeImg} source={{uri: 'cpt_like_dis'}} />
+            </View>);
+        }
+    }
+}
+
 class CptLike extends React.Component {
     constructor(props) {
         super(props)
@@ -167,35 +258,11 @@ class CptLike extends React.Component {
         var total = this.state.likeOption.hostOpt.result + this.state.likeOption.guestOpt.result;
 
         if(total !== 0) {
-            var leftFlex = this.state.likeOption.hostOpt.result/total;
-            var rightFlex= this.state.likeOption.guestOpt.result/total;
+            leftFlex = this.state.likeOption.hostOpt.result/total;
+            rightFlex= this.state.likeOption.guestOpt.result/total;
         }
 
-        var hostLikeStyle = [this.props.status === 0 ? styles.likeButton : styles.likeButton1];
-        var guestLikeUrl = this.props.status === 0 ? 'cpt_like_sel' : 'cpt_like';
-        var guestLikeStyle = [this.props.status === 0 ? styles.likeButton : styles.likeButton1];
-        var hostLikeUrl = this.props.status === 0 ? 'cpt_like_sel' : 'cpt_like';
-
-        if(this.state.likeStatus === 0) {
-            hostLikeStyle.push(this.props.status === 0 ? styles.prelikeButton : styles.prelikeButton1);
-            guestLikeStyle.push(this.props.status === 0 ? styles.prelikeButton : styles.prelikeButton1);
-            guestLikeUrl = this.props.status === 0 ? 'pre_like_normal' : 'cpt_like';
-            hostLikeUrl = this.props.status === 0 ? 'pre_like_normal' : 'cpt_like';
-        }
-
-        if(this.state.likeStatus === 1) {
-            hostLikeStyle.push(this.props.status === 0 ? {} : styles.likedButton);
-            guestLikeStyle.push(this.props.status === 0 ? {} : styles.disLikeButton);
-            guestLikeUrl = this.props.status === 0 ? 'pre_like_dis' : 'cpt_like_dis';
-            hostLikeUrl = this.props.status === 0 ? 'pre_like_yellow' : 'cpt_like_sel';
-        }
-
-        if(this.state.likeStatus === 2) {
-            hostLikeStyle.push(this.props.status === 0 ? {} : styles.disLikeButton);
-            guestLikeStyle.push(this.props.status === 0 ? {} : styles.likedButton1);
-            hostLikeUrl = this.props.status === 0 ? 'pre_like_dis' : 'cpt_like_dis';
-            guestLikeUrl = this.props.status === 0 ? 'pre_like_blue' : 'cpt_like_sel';
-        }
+        var LikeBtn = this.props.status === 0 ? PreLikeButton : LikeButton;
 
         var placeHolderLike = this.state.likeAni.interpolate({
             inputRange: [0, 1],
@@ -216,7 +283,11 @@ class CptLike extends React.Component {
             </View>
         </View>
             <View style={styles.likeButtons}>
-                {this.renderLikeButton(this.likeHost.bind(this), hostLikeStyle, hostLikeUrl)}
+                <LikeBtn
+                    type={'host'}
+                    likeStatus={this.state.likeStatus}
+                    onPress={() => {this.likeHost()}}
+                ></LikeBtn>
                 <View>
                     <Text style={this.props.status === 0 ? styles.likeNum : styles.likeNum1}>{this.state.likeOption.hostOpt.result}</Text>
                 </View>
@@ -225,7 +296,11 @@ class CptLike extends React.Component {
                 <View>
                     <Text style={this.props.status === 0 ? styles.likeNum : styles.likeNum1}>{this.state.likeOption.guestOpt.result}</Text>
                 </View>
-                {this.renderLikeButton(this.likeGuest.bind(this), guestLikeStyle, guestLikeUrl)}
+                <LikeBtn
+                    type={'guest'}
+                    likeStatus={this.state.likeStatus}
+                    onPress={() => {this.likeGuest()}}
+                ></LikeBtn>
             </View></View>)
     }
 

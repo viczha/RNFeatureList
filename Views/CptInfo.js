@@ -40,6 +40,7 @@ var {
     RefreshControl,
     Image,
     NetInfo,
+    TouchableOpacity,
     } = React;
 
 const window = Dimensions.get('window');
@@ -103,6 +104,10 @@ class CptInfo extends React.Component {
 
         this.loaded = false;
         this.curPlayingVid = {lindId: ''};
+
+        this.focusHandle = this.didFocus.bind(this);
+        this.currentRoute = this.props.navigator.navigationContext.currentRoute;
+        this.props.emitter.listen(this.currentRoute.componentName + 'DidFocus', this.focusHandle)
     }
 
     componentWillMount() {
@@ -118,6 +123,7 @@ class CptInfo extends React.Component {
         if (this.statusTimerID) {
             clearTimeout(this.statusTimerID);
         }
+        this.props.emitter.remove(this.currentRoute.componentName + 'DidFocus', this.focusHandle)
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -125,11 +131,10 @@ class CptInfo extends React.Component {
     }
 
     componentDidMount() {
-
     }
 
     didFocus() {
-        console.log('did focused...')
+        this._fetchData();
     }
 
     _fetchData() {
@@ -355,6 +360,9 @@ class CptInfo extends React.Component {
         );
     }
 
+    goBack() {
+        this.props.navigator.pop();
+    }
 
     //比赛开始前头部信息
     renderCptPreInfo() {
@@ -362,6 +370,13 @@ class CptInfo extends React.Component {
             var h = window.width * 9 / 16;
             return (<View style={styles.videoContainer}>
                 <Image style={styles.videoBgImg} source={require('../Src/Images/spot_video_bg@2x.jpg')}/>
+                <TouchableOpacity
+                    style={{paddingLeft: 12, paddingTop: 25, paddingBottom: 25, paddingRight: 12, position: 'absolute',  left: 0, top: 0, backgroundColor: 'transparent'}}
+                    onPress={this.goBack.bind(this)}>
+                    <Image
+                        style={{width: 27, height: 27, backgroundColor: 'transparent'}}
+                        source={require('../Src/Images/back.png')} />
+                </TouchableOpacity>
             </View>);
         }
         if (this.state.status === 0) {
@@ -369,6 +384,13 @@ class CptInfo extends React.Component {
             return (
                 <View style={styles.videoContainer}>
                     <Image style={styles.videoBgImg} source={require('../Src/Images/spot_video_bg@2x.jpg')}/>
+                    <TouchableOpacity
+                        style={{paddingLeft: 12, paddingTop: 25, paddingBottom: 25, paddingRight: 12, position: 'absolute',  left: 0, top: 0, backgroundColor: 'transparent'}}
+                        onPress={this.goBack.bind(this)}>
+                        <Image
+                            style={{width: 27, height: 27, backgroundColor: 'transparent'}}
+                            source={require('../Src/Images/back.png')} />
+                    </TouchableOpacity>
                     <View style={styles.preInfoCon}>
                         {this.renderCptLike(0)}
                     </View>
@@ -381,6 +403,13 @@ class CptInfo extends React.Component {
             return (
                 <View style={styles.videoContainer}>
                     <Image style={styles.videoBgImg} source={require('../Src/Images/spot_video_bg@2x.jpg')}/>
+                    <TouchableOpacity
+                        style={{paddingLeft: 12, paddingTop: 25, paddingBottom: 25, paddingRight: 12, position: 'absolute',  left: 0, top: 0, backgroundColor: 'transparent'}}
+                        onPress={this.goBack.bind(this)}>
+                        <Image
+                            style={{width: 27, height: 27, backgroundColor: 'transparent'}}
+                            source={require('../Src/Images/back.png')} />
+                    </TouchableOpacity>
                     <View style={styles.preInfoCon}>
                         {this.renderCptLike(0, true)}
                     </View>
@@ -395,7 +424,15 @@ class CptInfo extends React.Component {
             )
         } else {
             var h = window.width * 9 / 16;
-            return (<View style={{height: h}}></View>);
+            return (<View style={{height: h}}>
+                <TouchableOpacity
+                    style={{paddingLeft: 12, paddingTop: 25, paddingBottom: 25, paddingRight: 12, position: 'absolute',  left: 0, top: 0, backgroundColor: 'transparent'}}
+                    onPress={this.goBack.bind(this)}>
+                    <Image
+                        style={{width: 27, height: 27, backgroundColor: 'transparent'}}
+                        source={require('../Src/Images/back.png')} />
+                </TouchableOpacity>
+            </View>);
         }
     }
 
