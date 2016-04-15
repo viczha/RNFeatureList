@@ -37,6 +37,10 @@ class DefaultIndicator extends React.Component {
         this.rotateArrow(false);
     }
 
+    refreshEnd() {
+        this.state.imageRotate.setValue(0);
+    }
+
     rotateArrow(flag) {
         Animated.timing(
             this.state.imageRotate,
@@ -126,7 +130,7 @@ class RefreshableScrollView extends React.Component {
                 val = Math.max(val, 0);
             }
             val = Math.max(val, -offsetHeight);
-            val = Math.min(val, offsetHeight);
+            val = Math.min(val, 0);
             this.state.innerTop.setValue(val)
         } else if(!this.state.refreshing) {
             var maxOffset = contentSize.height-layoutMeasurement.height;
@@ -140,6 +144,7 @@ class RefreshableScrollView extends React.Component {
     }
 
     refreshEnd() {
+        this.indicator.refreshEnd && this.indicator.refreshEnd();
         Animated.timing(
             this.state.innerTop,
             {
