@@ -6,5 +6,6 @@ module.exports = {
     ViewList: require('./ViewList'),
     TeamInfo: require('./TeamInfo'),
     CptInfo: require('./CptInfo'),
-    PullToRefreshView: require('./PullToRefreshView')
+    PullToRefreshView: require('./PullToRefreshView'),
+    NavigationExample: require('../UIExample/Navigator/NavigatorExample')
 }

@@ -8,13 +8,69 @@ import React, {
     StyleSheet,
     Text,
     View,
-    Navigator,
     TouchableOpacity,
-    Image
+    Image,
+    Navigator,
+    PixelRatio,
+    ScrollView,
+    TabBarIOS,
 } from 'react-native';
 
 var JSUtils = require('./Utils/common');
-var appViews = require('./Views/AppViews')
+var ViewList = require('./Views/ViewList');
+
+var ROUTE_STACK = [
+    {name: 'ViewList', index: 0},
+    {name: '', index: 1},
+    {name: '', index: 2}
+]
+
+class BottomNavBar extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            tabIndex: props.initTabIndex,
+        };
+    }
+    render() {
+        return (
+            <View style={styles.tabs}>
+                <TabBarIOS>
+                    <TabBarIOS.Item
+                        icon={require('./Src/Images/playerNumBg@2x.png')}
+                        title="Basic"
+                        selected={this.state.tabIndex === 0}
+                        onPress={() => {
+                          this.props.onTabIndex(0);
+                          this.setState({ tabIndex: 0, });
+                        }}>
+                        <View />
+                    </TabBarIOS.Item>
+                    <TabBarIOS.Item
+                        icon={require('./Src/Images/playerNumBg@2x.png')}
+                        title="Blue Tab"
+                        selected={this.state.tabIndex === 1}
+                        onPress={() => {
+                          this.props.onTabIndex(1);
+                          this.setState({ tabIndex: 1, });
+                        }}>
+                        <View />
+                    </TabBarIOS.Item>
+                    <TabBarIOS.Item
+                        icon={require('./Src/Images/playerNumBg@2x.png')}
+                        title="Blue Tab"
+                        selected={this.state.tabIndex === 2}
+                        onPress={() => {
+                          this.props.onTabIndex(2);
+                          this.setState({ tabIndex: 2, });
+                        }}>
+                        <View />
+                    </TabBarIOS.Item>
+                </TabBarIOS>
+            </View>
+        );
+    }
+}
 
 
 class App extends Component {
@@ -33,65 +89,75 @@ class App extends Component {
         this._emitter.removeAll();
     }
 
-
-    renderBody(route, navigator) {
-        return (
-            <View>
-                {this.renderHeaderSection(route, navigator)}
-                {this.renderNavComponet(route, navigator)}
-            </View>
-        )
-    }
-
-    renderHeaderSection(route, navigator) {
-        if(route.index > 0 && route.hasHeader) {
-            return (
-                <View style={{height: 70, justifyContent: 'center',}}>
-                    <TouchableOpacity
-                        style={{paddingLeft: 12, backgroundColor: 'transparent'}}
-                        onPress={() => {navigator.pop()}}>
-                        <View style={{width: 27, height: 27, borderRadius: 13.5, backgroundColor: 'black', opacity: 0.5}}>
-                            <Image
-                                style={{width: 27, height: 27, backgroundColor: 'transparent'}}
-                                source={require('./Src/Images/back.png')} />
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            )
-        } else {
-            return false;
-        }
-
-    }
-
-
-    renderNavComponet(route, navigator) {
-        var ComponentView = appViews[route.componentName];
-        return <ComponentView
-            ref={(c) => {this._currentComponent = c}}
-            style={{flex: 1}}
-            navigator={navigator}
-            emitter={this._emitter}
-        ></ComponentView>
-    }
-
-    //navigatorBack(route, navigator) {
-    //    if(route.index > 0) {
-    //        navigator.pop();
-    //    }
-    //}
-
     render() {
         return (
             <Navigator
-                ref={(nav) => {this.nav = nav}}
-                initialRoute={{name: 'S', index: 0, componentName: 'ViewList'}}
-                renderScene={this.renderBody.bind(this)}
+                style={{flex:1}}
+                debugOverlay={false}
+                ref={(navigator) => {this.navigator = navigator}}
+                initialRoute={ROUTE_STACK[0]}
+                initialRouteStack={ROUTE_STACK}
+                renderScene={(router, navigator) => {
+                    if(router.name == 'ViewList') {
+                        return (<ViewList></ViewList>)
+                    } else {
+                        return (<View
+                            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
+                        >
+                            <Text>tab index: {router.index}</Text>
+                        </View>)
+                    }
+                }}
+                configureScene={() => ({
+                  ...Navigator.SceneConfigs.HorizontalSwipeJump,
+                  gestures: {}
+                })}
                 onDidFocus={this.navigatorDidFocus.bind(this)}
-
+                navigationBar={
+                    <BottomNavBar
+                        ref={(navBar) => { this.navBar = navBar; }}
+                        initTabIndex={0}
+                        onTabIndex={(index) => {
+                            this.navigator.jumpTo(ROUTE_STACK[index])
+                        }}
+                    />
+                }
             />
         );
     }
 }
+
+var styles = StyleSheet.create({
+    button: {
+        backgroundColor: 'white',
+        padding: 15,
+        borderBottomWidth: 1 / PixelRatio.get(),
+        borderBottomColor: '#CDCDCD',
+    },
+    buttonText: {
+        fontSize: 17,
+        fontWeight: '500',
+    },
+    appContainer: {
+        overflow: 'hidden',
+        backgroundColor: '#dddddd',
+        flex: 1,
+    },
+    messageText: {
+        fontSize: 17,
+        fontWeight: '500',
+        padding: 15,
+        marginTop: 50,
+        marginLeft: 15,
+    },
+    scene: {
+        flex: 1,
+        paddingTop: 20,
+        backgroundColor: '#EAEAEA',
+    },
+    tabs: {
+        height: 70,
+    }
+});
 
 module.exports = App;

@@ -4,9 +4,12 @@ import React, {
     Text,
     View,
     ListView,
-    TouchableHighlight
+    TouchableOpacity,
+    Navigator,
+    Image
 } from 'react-native';
 
+var JSUtils = require('../Utils/common');
 var appViews = require('./AppViews');
 
 class ViewList extends Component {
@@ -16,10 +19,24 @@ class ViewList extends Component {
         this.state = {
             dataSource: ds.cloneWithRows(this.genRows())
         }
+
+        this._emitter = new JSUtils.EventEmitter();
     }
 
     genRows() {
         var rows = [];
+
+        rows.push({
+            title: 'team info',
+            componentName: 'TeamInfo',
+            index: 2
+        })
+
+        rows.push({
+            title: 'Cpt info',
+            componentName: 'CptInfo',
+            index: 4
+        })
 
         rows.push({
             title: '2048',
@@ -34,11 +51,7 @@ class ViewList extends Component {
             index: 1
         })
 
-        rows.push({
-            title: 'team info',
-            componentName: 'TeamInfo',
-            index: 2
-        })
+
 
         rows.push({
             title: 'Refresh View',
@@ -47,16 +60,16 @@ class ViewList extends Component {
         })
 
         rows.push({
-            title: 'Cpt info',
-            componentName: 'CptInfo',
-            index: 4
+            title: 'Navigation Example',
+            componentName: 'NavigationExample',
+            index: 5
         })
 
         return rows;
     }
 
     goPage(rowData) {
-        this.props.navigator.push({
+        this.nav.push({
             name: 'ddd',
             index: 1,
             componentName: rowData.componentName,
@@ -64,27 +77,57 @@ class ViewList extends Component {
         });
     }
 
+    navigatorDidFocus(evt) {
+        this._emitter.trigger(null, evt.componentName + 'DidFocus', evt);
+    }
+
+    componentWillUnmount() {
+        this._emitter.removeAll();
+    }
+
     renderRow(rowData, sectionID, rowID) {
         return (
-            <TouchableHighlight onPress={()=>this.goPage(rowData)}>
+            <TouchableOpacity onPress={()=>this.goPage(rowData)}>
                 <View style={styles.row}>
-                    <Text>{rowData.title}</Text>
+                    <Text style={styles.rowText}>{rowData.title}</Text>
+                    <Image style={styles.moreDetailImg} source={require('../Src/Images/home_arrow_icon@2x.png')} />
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
 
         );
     }
 
+    renderScene(router, navigator) {
+        if(router.componentName === 'ViewList') {
+            return (
+                <View style={styles.container}>
+                    <ListView
+                        style={styles.list}
+                        dataSource = {this.state.dataSource}
+                        renderRow = {this.renderRow.bind(this)}
+                    />
+                </View>
+            );
+        } else {
+            var ComponentView = appViews[router.componentName];
+            return <ComponentView
+                ref={(c) => {this._currentComponent = c}}
+                style={{flex: 1}}
+                navigator={navigator}
+                emitter={this._emitter}
+            ></ComponentView>
+        }
+    }
+
     render() {
         return (
-            <View style={styles.container}>
-                <ListView
-                    style={styles.list}
-                    dataSource = {this.state.dataSource}
-                    renderRow = {this.renderRow.bind(this)}
-                />
-            </View>
-        );
+            <Navigator
+                ref={(nav) => {this.nav = nav}}
+                initialRoute={{name: 'S', index: 0, componentName: 'ViewList'}}
+                renderScene={this.renderScene.bind(this)}
+                onDidFocus={this.navigatorDidFocus.bind(this)}
+            />
+        )
     }
 }
 
@@ -101,9 +144,26 @@ var styles = StyleSheet.create({
 
     row: {
         flex: 1,
+        flexDirection: 'row',
         height: 50,
+        paddingTop: 7,
+        paddingBottom: 7,
+        paddingLeft: 12,
+        paddingRight: 12,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderColor: '#eeeeee'
+    },
+
+    rowText: {
+        flex: 1,
+        fontSize: 15,
+    },
+
+    moreDetailImg: {
+        width: 11,
+        height: 11,
     }
 });
 
