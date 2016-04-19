@@ -10,7 +10,7 @@ import React, {
 } from 'react-native';
 
 var JSUtils = require('../Utils/common');
-var appViews = require('./AppViews');
+
 
 class ViewList extends Component {
     constructor(props) {
@@ -69,7 +69,7 @@ class ViewList extends Component {
     }
 
     goPage(rowData) {
-        this.nav.push({
+        this.props.navigator.push({
             name: 'ddd',
             index: 1,
             componentName: rowData.componentName,
@@ -97,36 +97,15 @@ class ViewList extends Component {
         );
     }
 
-    renderScene(router, navigator) {
-        if(router.componentName === 'ViewList') {
-            return (
-                <View style={styles.container}>
-                    <ListView
-                        style={styles.list}
-                        dataSource = {this.state.dataSource}
-                        renderRow = {this.renderRow.bind(this)}
-                    />
-                </View>
-            );
-        } else {
-            var ComponentView = appViews[router.componentName];
-            return <ComponentView
-                ref={(c) => {this._currentComponent = c}}
-                style={{flex: 1}}
-                navigator={navigator}
-                emitter={this._emitter}
-            ></ComponentView>
-        }
-    }
-
     render() {
         return (
-            <Navigator
-                ref={(nav) => {this.nav = nav}}
-                initialRoute={{name: 'S', index: 0, componentName: 'ViewList'}}
-                renderScene={this.renderScene.bind(this)}
-                onDidFocus={this.navigatorDidFocus.bind(this)}
-            />
+            <View style={styles.container}>
+                <ListView
+                    style={styles.list}
+                    dataSource = {this.state.dataSource}
+                    renderRow = {this.renderRow.bind(this)}
+                />
+            </View>
         )
     }
 }

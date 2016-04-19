@@ -18,6 +18,7 @@ import React, {
 
 var JSUtils = require('./Utils/common');
 var ViewList = require('./Views/ViewList');
+var appViews = require('./Views/AppViews');
 
 var ROUTE_STACK = [
     {name: 'ViewList', index: 0},
@@ -48,7 +49,7 @@ class BottomNavBar extends Component {
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
                         icon={require('./Src/Images/playerNumBg@2x.png')}
-                        title="Blue Tab"
+                        title="Blue"
                         selected={this.state.tabIndex === 1}
                         onPress={() => {
                           this.props.onTabIndex(1);
@@ -89,74 +90,106 @@ class App extends Component {
         this._emitter.removeAll();
     }
 
+    //render() {
+    //    return (
+    //        <Navigator
+    //            style={{flex:1}}
+    //            debugOverlay={false}
+    //            ref={(navigator) => {this.navigator = navigator}}
+    //            initialRoute={ROUTE_STACK[0]}
+    //            initialRouteStack={ROUTE_STACK}
+    //            renderScene={(router, navigator) => {
+    //                if(router.name == 'ViewList') {
+    //                    return (<ViewList></ViewList>)
+    //                } else {
+    //                    return (<View
+    //                        style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
+    //                    >
+    //                        <Text>tab index: {router.index}</Text>
+    //                    </View>)
+    //                }
+    //            }}
+    //            configureScene={() => ({
+    //              ...Navigator.SceneConfigs.HorizontalSwipeJump,
+    //              gestures: {}
+    //            })}
+    //            onDidFocus={this.navigatorDidFocus.bind(this)}
+    //            navigationBar={
+    //                <BottomNavBar
+    //                    ref={(navBar) => { this.navBar = navBar; }}
+    //                    initTabIndex={0}
+    //                    onTabIndex={(index) => {
+    //                        this.navigator.jumpTo(ROUTE_STACK[index])
+    //                    }}
+    //                />
+    //            }
+    //        />
+    //    );
+    //}
+
+
+    renderScene(router, navigator) {
+        if(router.componentName === 'home') {
+            return (
+                <Navigator
+                    style={{flex:1}}
+                    debugOverlay={false}
+                    ref={(navigator) => {this.navigator = navigator}}
+                    initialRoute={ROUTE_STACK[0]}
+                    initialRouteStack={ROUTE_STACK}
+                    renderScene={(router, nav) => {
+                        if(router.name == 'ViewList') {
+                            return (<ViewList navigator={navigator}></ViewList>)
+                        } else {
+                            return (<View
+                                style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
+                            >
+                                <Text>tab index: {router.index}</Text>
+                            </View>)
+                        }
+                    }}
+                    configureScene={() => ({
+                      ...Navigator.SceneConfigs.HorizontalSwipeJump,
+                      gestures: {}
+                    })}
+                    onDidFocus={this.navigatorDidFocus.bind(this)}
+                    navigationBar={
+                        <BottomNavBar
+                            ref={(navBar) => { this.navBar = navBar; }}
+                            initTabIndex={0}
+                            onTabIndex={(index) => {
+                                this.navigator.jumpTo(ROUTE_STACK[index])
+                            }}
+                        />
+                    }
+                />
+            );
+        } else {
+            var ComponentView = appViews[router.componentName];
+            return <ComponentView
+                ref={(c) => {this._currentComponent = c}}
+                style={{flex: 1}}
+                navigator={navigator}
+                emitter={this._emitter}
+            ></ComponentView>
+        }
+    }
+
     render() {
         return (
             <Navigator
-                style={{flex:1}}
-                debugOverlay={false}
-                ref={(navigator) => {this.navigator = navigator}}
-                initialRoute={ROUTE_STACK[0]}
-                initialRouteStack={ROUTE_STACK}
-                renderScene={(router, navigator) => {
-                    if(router.name == 'ViewList') {
-                        return (<ViewList></ViewList>)
-                    } else {
-                        return (<View
-                            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
-                        >
-                            <Text>tab index: {router.index}</Text>
-                        </View>)
-                    }
-                }}
-                configureScene={() => ({
-                  ...Navigator.SceneConfigs.HorizontalSwipeJump,
-                  gestures: {}
-                })}
+                ref={(nav) => {this.nav = nav}}
+                initialRoute={{name: 'S', index: 0, componentName: 'home'}}
+                renderScene={this.renderScene.bind(this)}
                 onDidFocus={this.navigatorDidFocus.bind(this)}
-                navigationBar={
-                    <BottomNavBar
-                        ref={(navBar) => { this.navBar = navBar; }}
-                        initTabIndex={0}
-                        onTabIndex={(index) => {
-                            this.navigator.jumpTo(ROUTE_STACK[index])
-                        }}
-                    />
-                }
             />
-        );
+        )
     }
 }
 
 var styles = StyleSheet.create({
-    button: {
-        backgroundColor: 'white',
-        padding: 15,
-        borderBottomWidth: 1 / PixelRatio.get(),
-        borderBottomColor: '#CDCDCD',
-    },
-    buttonText: {
-        fontSize: 17,
-        fontWeight: '500',
-    },
-    appContainer: {
-        overflow: 'hidden',
-        backgroundColor: '#dddddd',
-        flex: 1,
-    },
-    messageText: {
-        fontSize: 17,
-        fontWeight: '500',
-        padding: 15,
-        marginTop: 50,
-        marginLeft: 15,
-    },
-    scene: {
-        flex: 1,
-        paddingTop: 20,
-        backgroundColor: '#EAEAEA',
-    },
     tabs: {
-        height: 70,
+        height: 50,
     }
 });
 
