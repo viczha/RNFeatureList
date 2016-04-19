@@ -90,44 +90,6 @@ class App extends Component {
         this._emitter.removeAll();
     }
 
-    //render() {
-    //    return (
-    //        <Navigator
-    //            style={{flex:1}}
-    //            debugOverlay={false}
-    //            ref={(navigator) => {this.navigator = navigator}}
-    //            initialRoute={ROUTE_STACK[0]}
-    //            initialRouteStack={ROUTE_STACK}
-    //            renderScene={(router, navigator) => {
-    //                if(router.name == 'ViewList') {
-    //                    return (<ViewList></ViewList>)
-    //                } else {
-    //                    return (<View
-    //                        style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
-    //                    >
-    //                        <Text>tab index: {router.index}</Text>
-    //                    </View>)
-    //                }
-    //            }}
-    //            configureScene={() => ({
-    //              ...Navigator.SceneConfigs.HorizontalSwipeJump,
-    //              gestures: {}
-    //            })}
-    //            onDidFocus={this.navigatorDidFocus.bind(this)}
-    //            navigationBar={
-    //                <BottomNavBar
-    //                    ref={(navBar) => { this.navBar = navBar; }}
-    //                    initTabIndex={0}
-    //                    onTabIndex={(index) => {
-    //                        this.navigator.jumpTo(ROUTE_STACK[index])
-    //                    }}
-    //                />
-    //            }
-    //        />
-    //    );
-    //}
-
-
     renderScene(router, navigator) {
         if(router.componentName === 'home') {
             return (
@@ -152,7 +114,6 @@ class App extends Component {
                       ...Navigator.SceneConfigs.HorizontalSwipeJump,
                       gestures: {}
                     })}
-                    onDidFocus={this.navigatorDidFocus.bind(this)}
                     navigationBar={
                         <BottomNavBar
                             ref={(navBar) => { this.navBar = navBar; }}
@@ -166,13 +127,38 @@ class App extends Component {
             );
         } else {
             var ComponentView = appViews[router.componentName];
-            return <ComponentView
-                ref={(c) => {this._currentComponent = c}}
-                style={{flex: 1}}
-                navigator={navigator}
-                emitter={this._emitter}
-            ></ComponentView>
+            return (
+                <View style={{flex: 1}}>
+                    {this.renderHeaderSection(router, navigator)}
+                    <ComponentView
+                        ref={(c) => {this._currentComponent = c}}
+                        style={{flex: 1}}
+                        navigator={navigator}
+                        emitter={this._emitter}
+                    ></ComponentView>
+                </View>)
         }
+    }
+
+    renderHeaderSection(route, navigator) {
+        if(route.index > 0 && route.hasHeader) {
+            return (
+                <View style={{height: 70, justifyContent: 'center',}}>
+                    <TouchableOpacity
+                        style={{paddingLeft: 12, backgroundColor: 'transparent'}}
+                        onPress={() => {navigator.pop()}}>
+                        <View style={{width: 27, height: 27, borderRadius: 13.5, backgroundColor: 'black', opacity: 0.5}}>
+                            <Image
+                                style={{width: 27, height: 27, backgroundColor: 'transparent'}}
+                                source={require('./Src/Images/back.png')} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            )
+        } else {
+            return false;
+        }
+
     }
 
     render() {

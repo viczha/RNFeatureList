@@ -62,7 +62,8 @@ class ViewList extends Component {
         rows.push({
             title: 'Navigation Example',
             componentName: 'NavigationExample',
-            index: 5
+            index: 5,
+            hasHeader: true
         })
 
         return rows;
@@ -75,14 +76,6 @@ class ViewList extends Component {
             componentName: rowData.componentName,
             hasHeader: rowData.hasHeader || false
         });
-    }
-
-    navigatorDidFocus(evt) {
-        this._emitter.trigger(null, evt.componentName + 'DidFocus', evt);
-    }
-
-    componentWillUnmount() {
-        this._emitter.removeAll();
     }
 
     renderRow(rowData, sectionID, rowID) {
