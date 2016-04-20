@@ -13,12 +13,13 @@ import React, {
     Navigator,
     PixelRatio,
     ScrollView,
-    TabBarIOS,
+    Platform
 } from 'react-native';
 
 var JSUtils = require('./Utils/common');
 var ViewList = require('./Views/ViewList');
 var appViews = require('./Views/AppViews');
+var Tabbar = require('./UIComponent/Tabbar/index');
 
 var ROUTE_STACK = [
     {name: 'ViewList', index: 0},
@@ -36,38 +37,37 @@ class BottomNavBar extends Component {
     render() {
         return (
             <View style={styles.tabs}>
-                <TabBarIOS>
-                    <TabBarIOS.Item
-                        icon={require('./Src/Images/playerNumBg@2x.png')}
-                        title="Basic"
-                        selected={this.state.tabIndex === 0}
-                        onPress={() => {
-                          this.props.onTabIndex(0);
-                          this.setState({ tabIndex: 0, });
-                        }}>
-                        <View />
-                    </TabBarIOS.Item>
-                    <TabBarIOS.Item
-                        icon={require('./Src/Images/playerNumBg@2x.png')}
-                        title="Blue"
-                        selected={this.state.tabIndex === 1}
-                        onPress={() => {
-                          this.props.onTabIndex(1);
-                          this.setState({ tabIndex: 1, });
-                        }}>
-                        <View />
-                    </TabBarIOS.Item>
-                    <TabBarIOS.Item
-                        icon={require('./Src/Images/playerNumBg@2x.png')}
-                        title="Blue Tab"
-                        selected={this.state.tabIndex === 2}
-                        onPress={() => {
-                          this.props.onTabIndex(2);
-                          this.setState({ tabIndex: 2, });
-                        }}>
-                        <View />
-                    </TabBarIOS.Item>
-                </TabBarIOS>
+                <Tabbar
+                    items={[
+                        {
+                            icon: 'code',
+                            title: 'basic',
+                            selected:this.state.tabIndex === 0,
+                            onPress:() => {
+                              this.props.onTabIndex(0);
+                              this.setState({ tabIndex: 0, });
+                            }
+                        },
+                        {
+                            icon: 'star',
+                            title: 'Blue',
+                            selected:this.state.tabIndex === 1,
+                            onPress:() => {
+                              this.props.onTabIndex(1);
+                              this.setState({ tabIndex: 1, });
+                            }
+                        },
+                        {
+                            icon: 'heart',
+                            title: 'Blue Tab',
+                            selected:this.state.tabIndex === 2,
+                            onPress:() => {
+                              this.props.onTabIndex(2);
+                              this.setState({ tabIndex: 2, });
+                            }
+                        }
+                    ]}
+                />
             </View>
         );
     }

@@ -9,9 +9,6 @@ import React, {
     Image
 } from 'react-native';
 
-var JSUtils = require('../Utils/common');
-
-
 class ViewList extends Component {
     constructor(props) {
         super(props);
@@ -19,8 +16,6 @@ class ViewList extends Component {
         this.state = {
             dataSource: ds.cloneWithRows(this.genRows())
         }
-
-        this._emitter = new JSUtils.EventEmitter();
     }
 
     genRows() {
