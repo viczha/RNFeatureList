@@ -16,6 +16,7 @@ var deepEqual = require('../Utils/deepEqual');
 var Toast = require('../UIComponent/Toast');
 var ErrorTip = require('../UIComponent/ErrorTip');
 var CptLike = require('../UIComponent/CptLike');
+var RefreshableScrollView = require('../UIComponent/RefreshableScrollView');
 var JSUtils = {
     isEmptyObject: function(obj) {
         var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -137,14 +138,14 @@ class CptInfo extends React.Component {
         this._fetchData();
     }
 
-    _fetchData() {
+    _fetchData(callback) {
         var queryUrl = CompetitionQuery + 111;
         fetch(queryUrl, {
             method: 'GET',
             timeout: 15 * 1000
         }).then(response => response.json())
-            .then(json => this._handlerResponse(json))
-            .catch(error => this._onFetchError(error));
+            .then(json => this._handlerResponse(json, callback))
+            .catch(error => this._onFetchError(error, callback));
     }
 
     _showHistoryDetailLayer(type) {
@@ -315,12 +316,15 @@ class CptInfo extends React.Component {
                 }
                 this.setState(_state);
                 this.initOverLayer();
+                if(callback) {
+                    callback();
+                }
             } else {
-                this._onFetchError();
+                this._onFetchError('', callback);
             }
 
         } else {
-            this._onFetchError();
+            this._onFetchError('', callback);
         }
     }
 
@@ -334,7 +338,7 @@ class CptInfo extends React.Component {
 
     }
 
-    _onFetchError(error) {
+    _onFetchError(error, callback) {
         if (this.state.loadStatus === loadStatus.init) {
             this.setState({
                 loadStatus: loadStatus.failed,
@@ -346,6 +350,10 @@ class CptInfo extends React.Component {
                 isRefreshing: false,
             })
             this.refs.toast.show('刷新失败')
+        }
+
+        if(callback) {
+            callback();
         }
     }
 
@@ -695,16 +703,12 @@ class CptInfo extends React.Component {
         }
 
         return (<View style={{flex: 1,backgroundColor: '#eeeeee',}}>
-            <ScrollView
-                refreshControl={
-                <RefreshControl
-                  refreshing={this.state.isRefreshing}
-                  onRefresh={this.handleRefresh.bind(this)}
-                />
-              }
-                scrollEnabled={!this.state.hasOverLayer} style={[styles.container, {backgroundColor: 'transparent'}]}>
+            <RefreshableScrollView
+                onBeginRefresh={this.handleRefresh.bind(this)}
+                scrollEnabled={!this.state.hasOverLayer}
+                style={[styles.container, {backgroundColor: 'transparent'}]}>
                 {this.renderSections()}
-            </ScrollView>
+            </RefreshableScrollView>
             {this.renderMask()}
             {this.renderSelCommentator()}
             {this.renderCptHistoryDetailLayer()}
@@ -722,12 +726,12 @@ class CptInfo extends React.Component {
         );
     }
 
-    handleRefresh() {
+    handleRefresh(callback) {
         if (this.state.isRefreshing === true) {
             return;
         }
         this.setState({isRefreshing: true});
-        this._fetchData();
+        this._fetchData(callback);
         if (this.refs.guessResult && this.refs.guessResult.fetchData) {
             this.refs.guessResult.fetchData();
         }

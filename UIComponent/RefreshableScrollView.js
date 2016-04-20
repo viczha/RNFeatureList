@@ -16,9 +16,8 @@ var {
     Animated,
     } = React;
 
-const distance = 40;
-const offsetHeight = 40;
-
+const distance = 50;
+const offsetHeight = 50;
 
 class DefaultIndicator extends React.Component {
     constructor(props) {
@@ -61,7 +60,7 @@ class DefaultIndicator extends React.Component {
         if(this.props.refreshing) {
             return (
                 <View style={styles.scrollViewIndicatorContainer}>
-                    <Image style={{width: 15, height: 30, backgroundColor: 'transparent'}}
+                    <Image style={{width: 19, height: 38, backgroundColor: 'transparent'}}
                            source={require('../Src/Images/loading-football.gif')}/>
                     <Text style={styles.indicatorText}>玩命加载中...</Text>
                 </View>
@@ -219,9 +218,9 @@ var styles = StyleSheet.create({
     },
 
     indicatorText: {
-        fontSize: 10,
+        fontSize: 13,
         color: '#969696',
-        marginLeft: 5,
+        marginLeft: 10,
     }
 });
 
