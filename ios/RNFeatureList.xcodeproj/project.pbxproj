@@ -22,6 +22,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		249850087C3A46DCB48D69FD /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5315B4BB38B94C50BECBA755 /* libRNVectorIcons.a */; };
+		28A906341CC8A6750017D5C5 /* CalendarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 28A906331CC8A6750017D5C5 /* CalendarManager.m */; };
 		28B182361CB753F300FBC550 /* react.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 28B182351CB753F300FBC550 /* react.jsbundle */; };
 		2E8C4D3BD26B4C8A82D31026 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B9A45E03970491E820578B2 /* Entypo.ttf */; };
 		4768B593A9F64C16A778F5E4 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AA0DE92974ADEB33B46B6 /* Foundation.ttf */; };
@@ -143,6 +144,8 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RNFeatureList/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RNFeatureList/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		28A906321CC8A6750017D5C5 /* CalendarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarManager.h; sourceTree = "<group>"; };
+		28A906331CC8A6750017D5C5 /* CalendarManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarManager.m; sourceTree = "<group>"; };
 		28B182351CB753F300FBC550 /* react.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = react.jsbundle; path = RNFeatureList/react.jsbundle; sourceTree = "<group>"; };
 		45145F636898443A908BB2FD /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		490C0B2C6EF84A039E65A192 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -261,6 +264,7 @@
 		13B07FAE1A68108700A75B9A /* react.jsbundle */ = {
 			isa = PBXGroup;
 			children = (
+				2837EC811CC86F7600547CAB /* RCT */,
 				28B182351CB753F300FBC550 /* react.jsbundle */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -287,6 +291,15 @@
 				2837EC721CC76EEF00547CAB /* libRNVectorIcons.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2837EC811CC86F7600547CAB /* RCT */ = {
+			isa = PBXGroup;
+			children = (
+				28A906321CC8A6750017D5C5 /* CalendarManager.h */,
+				28A906331CC8A6750017D5C5 /* CalendarManager.m */,
+			);
+			name = RCT;
 			sourceTree = "<group>";
 		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
@@ -619,6 +632,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				28A906341CC8A6750017D5C5 /* CalendarManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

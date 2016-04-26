@@ -13,13 +13,17 @@ import React, {
     Navigator,
     PixelRatio,
     ScrollView,
-    Platform
+    Platform,
+    BackAndroid
 } from 'react-native';
 
 var JSUtils = require('./Utils/common');
 var ViewList = require('./Views/ViewList');
 var appViews = require('./Views/AppViews');
 var Tabbar = require('./UIComponent/Tabbar/index');
+var Icon = require('react-native-vector-icons/FontAwesome');
+
+var NativeModules = require('react-native').NativeModules;
 
 var ROUTE_STACK = [
     {name: 'ViewList', index: 0},
@@ -41,7 +45,7 @@ class BottomNavBar extends Component {
                     items={[
                         {
                             icon: 'code',
-                            title: 'basic',
+                            title: 'Basic Usage',
                             selected:this.state.tabIndex === 0,
                             onPress:() => {
                               this.props.onTabIndex(0);
@@ -50,7 +54,7 @@ class BottomNavBar extends Component {
                         },
                         {
                             icon: 'star',
-                            title: 'Blue',
+                            title: 'My Lib',
                             selected:this.state.tabIndex === 1,
                             onPress:() => {
                               this.props.onTabIndex(1);
@@ -59,7 +63,7 @@ class BottomNavBar extends Component {
                         },
                         {
                             icon: 'heart',
-                            title: 'Blue Tab',
+                            title: 'Third Party',
                             selected:this.state.tabIndex === 2,
                             onPress:() => {
                               this.props.onTabIndex(2);
@@ -80,14 +84,35 @@ class App extends Component {
 
         this._emitter = new JSUtils.EventEmitter();
         super(props);
+
+        this.androidBackHandle = () => {
+            this.nav.pop();
+            return true;
+        };
+
+        if(Platform.OS === 'ios') {
+            var CalendarManager = NativeModules.CalendarManager;
+            CalendarManager.addEvent('Birthday Party', {
+                location: 'location'
+            });
+        }
     }
 
     navigatorDidFocus(evt) {
         this._emitter.trigger(null, evt.componentName + 'DidFocus', evt);
     }
 
+    componentDidMount() {
+        if(Platform.OS === 'android') {
+            BackAndroid.addEventListener('hardwareBackPress', this.androidBackHandle);
+        }
+    }
+
     componentWillUnmount() {
         this._emitter.removeAll();
+        if(Platform.OS === 'android') {
+            BackAndroid.removeEventListener('hardwareBackPress', this.androidBackHandle);
+        }
     }
 
     renderScene(router, navigator) {
@@ -135,7 +160,7 @@ class App extends Component {
                         style={{flex: 1}}
                         navigator={navigator}
                         emitter={this._emitter}
-                    ></ComponentView>
+                    />
                 </View>)
         }
     }
@@ -147,11 +172,9 @@ class App extends Component {
                     <TouchableOpacity
                         style={{paddingLeft: 12, backgroundColor: 'transparent'}}
                         onPress={() => {navigator.pop()}}>
-                        <View style={{width: 27, height: 27, borderRadius: 13.5, backgroundColor: 'black', opacity: 0.5}}>
-                            <Image
-                                style={{width: 27, height: 27, backgroundColor: 'transparent'}}
-                                source={require('./Src/Images/back.png')} />
-                        </View>
+                        <Icon name={'chevron-left'}
+                              size={25}
+                              color={'gray'} />
                     </TouchableOpacity>
                 </View>
             )

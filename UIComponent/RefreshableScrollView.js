@@ -100,6 +100,10 @@ class RefreshableScrollView extends React.Component {
                     this.setState({
                         refreshing: true
                     });
+                    this.state.innerTop.setValue(0)
+                    this.refs['scroll'].setNativeProps({
+                        contentOffset: {y: this.y + offsetHeight}
+                    })
                     this.beginRefresh();
                 }
             }
@@ -122,15 +126,14 @@ class RefreshableScrollView extends React.Component {
                 this.indicator.onPullBack();
             }
         }
-
         if(contentOffset.y < 0) {
-            var val = -contentOffset.y - offsetHeight;
-            if(this.state.refreshing) {
-                val = Math.max(val, 0);
-            }
-            val = Math.max(val, -offsetHeight);
-            val = Math.min(val, 0);
-            this.state.innerTop.setValue(val)
+            //var val = -contentOffset.y - distance;
+            //if(this.state.refreshing) {
+            //    val = 0;
+            //}
+            //val = Math.max(val, -offsetHeight);
+            //val = Math.min(val, 0);
+            //this.state.innerTop.setValue(val)
         } else if(!this.state.refreshing) {
             var maxOffset = contentSize.height-layoutMeasurement.height;
             if(maxOffset != 0) {
