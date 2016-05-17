@@ -8,5 +8,6 @@ module.exports = {
     CptInfo: require('./CptInfo'),
     PullToRefreshView: require('./PullToRefreshView'),
     NavigationExample: require('../UIExample/Navigator/NavigatorExample'),
-    BasicList: require('./BasicList')
+    BasicList: require('./BasicList'),
+    InputKeyBoard: require('./inputKeyboard')
 }

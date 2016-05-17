@@ -84,7 +84,7 @@ class RefreshableScrollView extends React.Component {
         super(props);
 
         this.state = {
-            innerTop: new Animated.Value(-offsetHeight),
+            innerTop: new Animated.Value(0),
             needPull: false,
             refreshing: false,
         }
@@ -100,9 +100,9 @@ class RefreshableScrollView extends React.Component {
                     this.setState({
                         refreshing: true
                     });
-                    this.state.innerTop.setValue(0)
-                    this.refs['scroll'].setNativeProps({
-                        contentOffset: {y: this.y + offsetHeight}
+
+                    this.scroll.setNativeProps({
+                        contentInset: {top: 0}
                     })
                     this.beginRefresh();
                 }
@@ -110,37 +110,24 @@ class RefreshableScrollView extends React.Component {
         });
     }
 
+    propTypes: {
+
+    }
+
     handlerScroll(event) {
         let {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
         this.y = contentOffset.y;
-        if(-this.y > distance && this.grant && this.state.needPull === false) {
+        if(-this.y > 0 && this.grant && this.state.needPull === false) {
             this.setState({needPull: true});
             if(this.indicator.onPullOver) {
                 this.indicator.onPullOver();
             }
         }
 
-        if(-this.y < distance && this.grant && this.state.needPull === true) {
+        if(-this.y < 0 && this.grant && this.state.needPull === true) {
             this.setState({needPull: false})
             if(this.indicator.onPullBack) {
                 this.indicator.onPullBack();
-            }
-        }
-        if(contentOffset.y < 0) {
-            //var val = -contentOffset.y - distance;
-            //if(this.state.refreshing) {
-            //    val = 0;
-            //}
-            //val = Math.max(val, -offsetHeight);
-            //val = Math.min(val, 0);
-            //this.state.innerTop.setValue(val)
-        } else if(!this.state.refreshing) {
-            var maxOffset = contentSize.height-layoutMeasurement.height;
-            if(maxOffset != 0) {
-                var val = contentOffset.y*offsetHeight/maxOffset - offsetHeight;
-                val = Math.min(val, 0);
-                val = Math.max(val, -offsetHeight);
-                this.state.innerTop.setValue(val)
             }
         }
     }
@@ -151,13 +138,18 @@ class RefreshableScrollView extends React.Component {
             this.state.innerTop,
             {
                 toValue: -offsetHeight,
-                duration: 180,
+                duration: 220,
             }
         ).start(() => {
             this.setState({
                 refreshing: false,
                 needPull: false
             });
+            this.scroll.setNativeProps({
+                contentInset: {top: -offsetHeight},
+                contentOffset: {y: offsetHeight}
+            });
+            this.state.innerTop.setValue(0);
         });
     }
 
@@ -185,13 +177,15 @@ class RefreshableScrollView extends React.Component {
         }
         return (
             <ScrollView
-                ref='scroll'
+                ref={(scroll) => {this.scroll = scroll}}
                 {...this.props}
                 {...this._panResponder.panHandlers}
                 scrollEventThrottle={13}
+                contentInset={{top: -offsetHeight}}
+                contentOffset={{y: offsetHeight}}
                 onScroll={this.handlerScroll.bind(this)}>
                 <Animated.View
-                    style={[styles.ScrollInner, {top: this.state.innerTop}]}
+                    style={[styles.ScrollInner,]}
                 >
                     <DefaultIndicator
                         ref={(indicator) => {this.indicator = indicator}}
@@ -218,6 +212,7 @@ var styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         height: offsetHeight,
+        backgroundColor: 'green'
     },
 
     indicatorText: {

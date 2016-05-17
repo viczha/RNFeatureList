@@ -55,6 +55,13 @@ class ViewList extends Component {
         })
 
         rows.push({
+            title: 'Input Keyboard',
+            componentName: 'InputKeyBoard',
+            index: 4,
+            hasHeader: true
+        })
+
+        rows.push({
             title: 'Navigation Example',
             componentName: 'NavigationExample',
             index: 5,
