@@ -110,21 +110,17 @@ class RefreshableScrollView extends React.Component {
         });
     }
 
-    propTypes: {
-
-    }
-
     handlerScroll(event) {
         let {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
         this.y = contentOffset.y;
-        if(-this.y > 0 && this.grant && this.state.needPull === false) {
+        if(this.y < 0 && this.grant && this.state.needPull === false) {
             this.setState({needPull: true});
             if(this.indicator.onPullOver) {
                 this.indicator.onPullOver();
             }
         }
 
-        if(-this.y < 0 && this.grant && this.state.needPull === true) {
+        if(this.y > 0 && this.grant && this.state.needPull === true) {
             this.setState({needPull: false})
             if(this.indicator.onPullBack) {
                 this.indicator.onPullBack();
@@ -170,7 +166,6 @@ class RefreshableScrollView extends React.Component {
     }
 
     render() {
-        console.log('scrollview render...');
         var inProps = {
             refreshing: this.state.refreshing,
             needPull: this.state.needPull
@@ -185,7 +180,7 @@ class RefreshableScrollView extends React.Component {
                 contentOffset={{y: offsetHeight}}
                 onScroll={this.handlerScroll.bind(this)}>
                 <Animated.View
-                    style={[styles.ScrollInner,]}
+                    style={[styles.ScrollInner, {top: this.state.innerTop}]}
                 >
                     <DefaultIndicator
                         ref={(indicator) => {this.indicator = indicator}}
@@ -212,7 +207,6 @@ var styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         height: offsetHeight,
-        backgroundColor: 'green'
     },
 
     indicatorText: {

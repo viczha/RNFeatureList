@@ -5,7 +5,7 @@
 'use strict'
 
 var React = require('react-native');
-var comCss = require('../Common/css');
+var comCss = require('../../Common/css');
 var JSUtils = {
     isEmptyObject: function(obj) {
         var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -31,9 +31,9 @@ var {
     Image,
     } = React;
 
-var FlexiableWebView = require('../UIComponent/FlexiableWebView');
+var FlexiableWebView = require('../../UIComponent/FlexiableWebView');
 var ScrollableTabView = require('react-native-scrollable-tab-view');
-var RefreshableScrollView = require('../UIComponent/RefreshableScrollView');
+var RefreshableScrollView = require('../../UIComponent/RefreshableScrollView');
 //var ErrorTip = require('./ErrorTip');
 
 const teamInfoQuery = 'http://sports.mobile.pptv.com/team/v1/detail?teamid=';
@@ -130,7 +130,7 @@ class TeamInfo extends React.Component {
     showLoading() {
         return (
             <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',backgroundColor: 'rgba(250,250,250,1)'}}>
-                <Image style={{width: 25, height: 53, backgroundColor: 'transparent',marginBottom: 4}} source={require('../Src/Images/loading-football.gif')} />
+                <Image style={{width: 25, height: 53, backgroundColor: 'transparent',marginBottom: 4}} source={require('../../Src/Images/loading-football.gif')} />
                 <Text style={{fontSize: 10, color: '#969696'}}>正在努力加载ing...</Text>
             </View>
         );
@@ -296,12 +296,12 @@ class TeamInfo extends React.Component {
                                     item.dlist.map((player, j) => (
                                         <View key={i + '-' +j} style={styles.sectionRow}>
                                             <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-                                                <Image style={[styles.playerImg, {position: 'absolute'}]} source={require('../Src/Images/cpt_player_small@2x.png')} />
+                                                <Image style={[styles.playerImg, {position: 'absolute'}]} source={require('../../Src/Images/cpt_player_small@2x.png')} />
                                                 <Image style={styles.playerImg} source={{uri: (player.photo ? player.photo : 'cpt_player_small')}} />
                                                 <Text style={[styles.playerName, {marginLeft: 6}]}>{player.name}</Text>
                                             </View>
                                             <View style={styles.playerNoCon}>
-                                                <Image style={styles.playerNoImg} source={require('../Src/Images/playerNumBg@2x.png')} />
+                                                <Image style={styles.playerNoImg} source={require('../../Src/Images/playerNumBg@2x.png')} />
                                                 <Text style={styles.playerNoText}>{player.shirtno}</Text>
                                             </View>
                                         </View>
@@ -335,13 +335,13 @@ class TeamInfo extends React.Component {
         });
         return (<View style={styles.constainer}>
             <View style={styles.header}>
-                <Image style={styles.header_bg_img} source={require('../Src/Images/football_team_bg@2x.png')} />
+                <Image style={styles.header_bg_img} source={require('../../Src/Images/football_team_bg@2x.png')} />
                 <TouchableOpacity
                     style={{paddingLeft: 12, paddingTop: 25, paddingBottom: 25, paddingRight: 12, position: 'absolute',  left: 0, top: 0, backgroundColor: 'transparent'}}
                     onPress={this.goBack.bind(this)}>
                     <Image
                         style={{width: 27, height: 27, backgroundColor: 'transparent'}}
-                        source={require('../Src/Images/back.png')} />
+                        source={require('../../Src/Images/back.png')} />
                 </TouchableOpacity>
                 <View style={styles.team_basic_info}>
                     <View style={styles.teamLogoCon}>

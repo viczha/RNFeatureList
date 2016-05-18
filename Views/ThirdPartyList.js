@@ -9,7 +9,7 @@ import React, {
     Image
 } from 'react-native';
 
-class ViewList extends Component {
+class ThirdPartyList extends Component {
     constructor(props) {
         super(props);
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) =>  r1.index !== r2.index});
@@ -20,19 +20,6 @@ class ViewList extends Component {
 
     genRows() {
         var rows = [];
-
-        rows.push({
-            title: 'team info',
-            componentName: 'TeamInfo',
-            index: 2
-        })
-
-        rows.push({
-            title: 'Cpt info',
-            componentName: 'CptInfo',
-            index: 4
-        })
-
         rows.push({
             title: '2048',
             componentName: 'Game2048',
@@ -43,21 +30,7 @@ class ViewList extends Component {
         rows.push({
             title: 'Scrollable View Sample',
             componentName: 'ScrollableView',
-            index: 1
-        })
-
-
-
-        rows.push({
-            title: 'Refresh View',
-            componentName: 'PullToRefreshView',
-            index: 3
-        })
-
-        rows.push({
-            title: 'Input Keyboard',
-            componentName: 'InputKeyBoard',
-            index: 4,
+            index: 1,
             hasHeader: true
         })
 
@@ -73,7 +46,7 @@ class ViewList extends Component {
 
     goPage(rowData) {
         this.props.navigator.push({
-            name: 'ddd',
+            title: rowData.title,
             index: 1,
             componentName: rowData.componentName,
             hasHeader: rowData.hasHeader || false
@@ -141,4 +114,5 @@ var styles = StyleSheet.create({
     }
 });
 
-module.exports = ViewList;
+module.exports = ThirdPartyList;
+

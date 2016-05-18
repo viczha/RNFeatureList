@@ -5,7 +5,7 @@ import React, {
     View
 } from 'react-native';
 
-var RCTMap = require('../NativeUIComponent/MapView');
+var RCTMap = require('../../NativeUIComponent/MapView');
 
 class MapView extends Component {
     render() {

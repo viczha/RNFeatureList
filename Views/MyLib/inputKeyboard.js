@@ -15,7 +15,7 @@ var {
     Image
     } = React;
 
-var KeyboardAwareView = require('../UIComponent/KeyboradAwareView/index');
+var KeyboardAwareView = require('../../UIComponent/KeyboradAwareView/index');
 
 class InputKeyboard extends Component {
     constructor(props) {

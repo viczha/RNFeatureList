@@ -18,7 +18,6 @@ import React, {
 } from 'react-native';
 
 var JSUtils = require('./Utils/common');
-var ViewList = require('./Views/ViewList');
 var appViews = require('./Views/AppViews');
 var Tabbar = require('./UIComponent/Tabbar/index');
 var Icon = require('react-native-vector-icons/FontAwesome');
@@ -26,9 +25,9 @@ var Icon = require('react-native-vector-icons/FontAwesome');
 var NativeModules = require('react-native').NativeModules;
 
 var ROUTE_STACK = [
-    {name: 'ViewList', index: 0},
-    {name: '', index: 1},
-    {name: '', index: 2}
+    {name: 'BasicList', index: 0},
+    {name: 'MyLibList', index: 1},
+    {name: 'ThirdPartyList', index: 2}
 ]
 
 class BottomNavBar extends Component {
@@ -90,12 +89,7 @@ class App extends Component {
             return true;
         };
 
-        if(Platform.OS === 'ios') {
-            var CalendarManager = NativeModules.CalendarManager;
-            CalendarManager.addEvent('Birthday Party', {
-                location: 'location'
-            });
-        }
+        //
     }
 
     navigatorDidFocus(evt) {
@@ -125,15 +119,11 @@ class App extends Component {
                     initialRoute={ROUTE_STACK[0]}
                     initialRouteStack={ROUTE_STACK}
                     renderScene={(router, nav) => {
-                        if(router.name == 'ViewList') {
-                            return (<ViewList navigator={navigator}></ViewList>)
-                        } else {
-                            return (<View
-                                style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
-                            >
-                                <Text>tab index: {router.index}</Text>
+                        var ComponentView = appViews[router.name];
+                        return (
+                            <View style={{flex: 1}}>
+                                <ComponentView navigator={navigator} />
                             </View>)
-                        }
                     }}
                     configureScene={() => ({
                       ...Navigator.SceneConfigs.HorizontalSwipeJump,
@@ -168,14 +158,18 @@ class App extends Component {
     renderHeaderSection(route, navigator) {
         if(route.index > 0 && route.hasHeader) {
             return (
-                <View style={{height: 70, justifyContent: 'center',}}>
+                <View style={{marginTop: 20, height: 50, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', borderBottomWidth: 1}}>
                     <TouchableOpacity
-                        style={{paddingLeft: 12, backgroundColor: 'transparent'}}
+                        style={{width: 50,justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent'}}
                         onPress={() => {navigator.pop()}}>
                         <Icon name={'chevron-left'}
                               size={25}
                               color={'gray'} />
                     </TouchableOpacity>
+                    <View style={{flex:1, alignItems: 'center', justifyContent: 'center',}}><Text style={{fontSize: 13, color: 'rgba(50, 50, 50, 1)',}}>{route.title}</Text></View>
+                    <View
+                        style={{width: 50,justifyContent: 'center', alignItems: 'center',}}>
+                    </View>
                 </View>
             )
         } else {

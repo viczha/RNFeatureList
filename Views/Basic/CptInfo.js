@@ -3,20 +3,20 @@
  */
 var React = require('react-native');
 var Dimensions = require('Dimensions');
-var CptHistory = require('../UIComponent/CptHistory');
-var CptHistoryDetail = require('../UIComponent/CptHistoryDetail');
-var LeagueInfo = require('../UIComponent/LeagueInfo');
-var LeagueDetailInfo = require('../UIComponent/LeagueDetailInfo');
-var CountDown = require('../UIComponent/CountDown');
-var CptBasic = require('../UIComponent/CptBasic');
-var Mask = require('../UIComponent/Mask');
-var SelCommentator = require('../UIComponent/SelCommentator');
+var CptHistory = require('../../UIComponent/CptHistory');
+var CptHistoryDetail = require('../../UIComponent/CptHistoryDetail');
+var LeagueInfo = require('../../UIComponent/LeagueInfo');
+var LeagueDetailInfo = require('../../UIComponent/LeagueDetailInfo');
+var CountDown = require('../../UIComponent/CountDown');
+var CptBasic = require('../../UIComponent/CptBasic');
+var Mask = require('../../UIComponent/Mask');
+var SelCommentator = require('../../UIComponent/SelCommentator');
 var CompetitionQuery = 'http://sports.mobile.pptv.com/competitionschedule/v1/detail?competitionscheduleid=';
-var deepEqual = require('../Utils/deepEqual');
-var Toast = require('../UIComponent/Toast');
-var ErrorTip = require('../UIComponent/ErrorTip');
-var CptLike = require('../UIComponent/CptLike');
-var RefreshableScrollView = require('../UIComponent/RefreshableScrollView');
+var deepEqual = require('../../Utils/deepEqual');
+var Toast = require('../../UIComponent/Toast');
+var ErrorTip = require('../../UIComponent/ErrorTip');
+var CptLike = require('../../UIComponent/CptLike');
+var RefreshableScrollView = require('../../UIComponent/RefreshableScrollView');
 var JSUtils = {
     isEmptyObject: function(obj) {
         var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -362,7 +362,7 @@ class CptInfo extends React.Component {
             <View
                 style={{flex: 1,justifyContent: 'center',alignItems: 'center',backgroundColor: 'rgba(250,250,250,1)'}}>
                 <Image style={{width: 25, height: 53, backgroundColor: 'transparent',marginBottom: 4}}
-                       source={require('../Src/Images/loading-football.gif')}/>
+                       source={require('../../Src/Images/loading-football.gif')}/>
                 <Text style={{fontSize: 10, color: '#969696'}}>正在努力加载ing...</Text>
             </View>
         );
@@ -377,13 +377,13 @@ class CptInfo extends React.Component {
         if (this.state.loadStatus !== loadStatus.loaded  || this.state.connectionInfo === 'none') {
             var h = window.width * 9 / 16;
             return (<View style={styles.videoContainer}>
-                <Image style={styles.videoBgImg} source={require('../Src/Images/spot_video_bg@2x.jpg')}/>
+                <Image style={styles.videoBgImg} source={require('../../Src/Images/spot_video_bg@2x.jpg')}/>
                 <TouchableOpacity
                     style={{paddingLeft: 12, paddingTop: 25, paddingBottom: 25, paddingRight: 12, position: 'absolute',  left: 0, top: 0, backgroundColor: 'transparent'}}
                     onPress={this.goBack.bind(this)}>
                     <Image
                         style={{width: 27, height: 27, backgroundColor: 'transparent'}}
-                        source={require('../Src/Images/back.png')} />
+                        source={require('../../Src/Images/back.png')} />
                 </TouchableOpacity>
             </View>);
         }
@@ -391,13 +391,13 @@ class CptInfo extends React.Component {
             //this._props.remainTime = 5*1000;
             return (
                 <View style={styles.videoContainer}>
-                    <Image style={styles.videoBgImg} source={require('../Src/Images/spot_video_bg@2x.jpg')}/>
+                    <Image style={styles.videoBgImg} source={require('../../Src/Images/spot_video_bg@2x.jpg')}/>
                     <TouchableOpacity
                         style={{paddingLeft: 12, paddingTop: 25, paddingBottom: 25, paddingRight: 12, position: 'absolute',  left: 0, top: 0, backgroundColor: 'transparent'}}
                         onPress={this.goBack.bind(this)}>
                         <Image
                             style={{width: 27, height: 27, backgroundColor: 'transparent'}}
-                            source={require('../Src/Images/back.png')} />
+                            source={require('../../Src/Images/back.png')} />
                     </TouchableOpacity>
                     <View style={styles.preInfoCon}>
                         {this.renderCptLike(0)}
@@ -410,13 +410,13 @@ class CptInfo extends React.Component {
         } else if (this.state.status === 2 || (this.state.status === 1 && !this.state.hasCommentators)) {
             return (
                 <View style={styles.videoContainer}>
-                    <Image style={styles.videoBgImg} source={require('../Src/Images/spot_video_bg@2x.jpg')}/>
+                    <Image style={styles.videoBgImg} source={require('../../Src/Images/spot_video_bg@2x.jpg')}/>
                     <TouchableOpacity
                         style={{paddingLeft: 12, paddingTop: 25, paddingBottom: 25, paddingRight: 12, position: 'absolute',  left: 0, top: 0, backgroundColor: 'transparent'}}
                         onPress={this.goBack.bind(this)}>
                         <Image
                             style={{width: 27, height: 27, backgroundColor: 'transparent'}}
-                            source={require('../Src/Images/back.png')} />
+                            source={require('../../Src/Images/back.png')} />
                     </TouchableOpacity>
                     <View style={styles.preInfoCon}>
                         {this.renderCptLike(0, true)}
@@ -438,7 +438,7 @@ class CptInfo extends React.Component {
                     onPress={this.goBack.bind(this)}>
                     <Image
                         style={{width: 27, height: 27, backgroundColor: 'transparent'}}
-                        source={require('../Src/Images/back.png')} />
+                        source={require('../../Src/Images/back.png')} />
                 </TouchableOpacity>
             </View>);
         }

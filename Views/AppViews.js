@@ -1,13 +1,30 @@
 'use strict'
 
-module.exports = {
-    ScrollableView: require('./ScrollableView'),
-    Game2048: require('./Game2048'),
-    ViewList: require('./ViewList'),
-    TeamInfo: require('./TeamInfo'),
-    CptInfo: require('./CptInfo'),
-    PullToRefreshView: require('./PullToRefreshView'),
-    NavigationExample: require('../UIExample/Navigator/NavigatorExample'),
+var util = require('../Common/JSUtils');
+
+var views = {
     BasicList: require('./BasicList'),
-    InputKeyBoard: require('./inputKeyboard')
+    MyLibList: require('./MyLibList'),
+    ThirdPartyList: require('./ThirdPartyList')
 }
+
+//basic
+util.extend(views, {
+    CptInfo: require('./Basic/CptInfo'),
+    TeamInfo: require('./Basic/TeamInfo')
+});
+
+//my lib
+util.extend(views, {
+    InputKeyBoard: require('./MyLib/inputKeyboard'),
+    PullToRefreshView: require('./MyLib/PullToRefreshView')
+});
+
+//3rd
+util.extend(views, {
+    Game2048: require('./3rd/Game2048'),
+    ScrollableView: require('./3rd/ScrollableView'),
+    NavigationExample: require('../UIExample/Navigator/NavigatorExample'),
+});
+
+module.exports = views;

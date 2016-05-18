@@ -1,5 +1,3 @@
-'use strict'
-
 import React, {
     Component,
     StyleSheet,
@@ -9,10 +7,9 @@ import React, {
     TouchableOpacity,
     Navigator,
     Image
-} from 'react-native'
+} from 'react-native';
 
-
-class BasicList extends Component {
+class ViewList extends Component {
     constructor(props) {
         super(props);
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) =>  r1.index !== r2.index});
@@ -23,17 +20,18 @@ class BasicList extends Component {
 
     genRows() {
         var rows = [];
-
         rows.push({
-            title: 'team info',
-            componentName: 'TeamInfo',
-            index: 2
+            title: 'Refresh View',
+            componentName: 'PullToRefreshView',
+            index: 3,
+            hasHeader: true
         })
 
         rows.push({
-            title: 'Cpt info',
-            componentName: 'CptInfo',
-            index: 4
+            title: 'Input Keyboard',
+            componentName: 'InputKeyBoard',
+            index: 4,
+            hasHeader: true
         })
 
         return rows;
@@ -73,6 +71,7 @@ class BasicList extends Component {
     }
 }
 
+
 var styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -108,5 +107,4 @@ var styles = StyleSheet.create({
     }
 });
 
-
-module.exports = BasicList;
+module.exports = ViewList;
